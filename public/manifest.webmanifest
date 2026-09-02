@@ -1,0 +1,30 @@
+{
+    "name": "SenjaPustaka",
+    "short_name": "SenjaPustaka",
+    "description": "Perpustakaan digital yang terasa hidup — baca ebook, kumpulkan poin, dan naik level.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#101b26",
+    "theme_color": "#101b26",
+    "lang": "id",
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

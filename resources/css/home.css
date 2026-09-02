@@ -1,0 +1,583 @@
+/* ══════════════════════════════════════════════════════════════════
+   HOME — hero "Jendela Senja", rak buku 3D, search glass, section
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── HERO ──────────────────────────────────────────────────────── */
+.hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--gradient-hero);
+    color: var(--hero-fg);
+    min-height: 620px;
+    display: flex;
+    align-items: center;
+    padding-block: var(--sp-16) var(--sp-24);
+}
+
+/* grain */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* bintang berkedip (CSS murni) */
+.hero-stars {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-stars i {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--hero-star);
+    opacity: 0;
+    animation: twinkle var(--t, 4s) ease-in-out infinite;
+    animation-delay: var(--td, 0s);
+    box-shadow: 0 0 6px var(--hero-star);
+}
+
+@keyframes twinkle {
+    0%,
+    100% {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+.hero__grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: var(--sp-10);
+    align-items: center;
+}
+
+.hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--hero-eyebrow);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: var(--sp-4);
+}
+
+.hero__eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--color-amber);
+}
+
+.hero__title {
+    color: var(--hero-fg);
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 var(--sp-4);
+    text-shadow: var(--hero-title-shadow);
+}
+
+.hero__title em {
+    font-style: italic;
+    background: var(--hero-title-em);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero__sub {
+    color: var(--hero-fg-soft);
+    font-size: 1.08rem;
+    max-width: 520px;
+    margin: 0 0 var(--sp-8);
+}
+
+.hero__ctas {
+    display: flex;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--sp-10);
+}
+
+.hero__ctas .btn--ghost {
+    border-color: var(--hero-ghost-border);
+    color: var(--hero-fg);
+}
+
+.hero__ctas .btn--ghost:hover {
+    border-color: var(--hero-ghost-hover);
+    color: var(--hero-ghost-hover);
+}
+
+.hero__stats {
+    display: flex;
+    gap: var(--sp-8);
+}
+
+.hero__stat .mono {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--hero-fg);
+    display: block;
+}
+
+.hero__stat span:last-child {
+    font-size: 0.78rem;
+    color: var(--hero-fg-soft);
+    letter-spacing: 0.04em;
+}
+
+/* ── Rak buku 3D ───────────────────────────────────────────────── */
+.bookshelf {
+    perspective: 1200px;
+    user-select: none;
+}
+
+.bookshelf__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 380px;
+    padding: var(--sp-6) var(--sp-5) 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18));
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+    transform: rotateY(-8deg) rotateX(4deg);
+    transform-style: preserve-3d;
+}
+
+.book-spine {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--w, 46px);
+    height: var(--h, 260px);
+    border-radius: 6px 9px 9px 6px;
+    /* Warna spine mengikuti tema via --spine-N (variabel di variables.css).
+       Variasi per buku dipilih lewat data-spine agar rak tetap variatif
+       tapi tidak tabrakan dengan tema — dulu pakai cover_color dari DB
+       (biru malam) sehingga aneh di mode terang. */
+    background: var(--spine-grad, var(--gradient-sunset));
+    box-shadow: inset -5px 0 0 rgba(0, 0, 0, 0.18), inset 2px 0 0 rgba(255, 255, 255, 0.18),
+        0 10px 20px rgba(0, 0, 0, 0.3);
+    transform: rotateY(0deg);
+    transform-style: preserve-3d;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    cursor: pointer;
+    animation: book-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: var(--bd, 0s);
+}
+
+/* Variasi warna spine — data-spine memilih salah satu dari 6 palet
+   tema (--spine-1 … --spine-6, didefinisikan per tema di variables.css). */
+.book-spine[data-spine='1'] {
+    --spine-grad: var(--spine-1);
+}
+
+.book-spine[data-spine='2'] {
+    --spine-grad: var(--spine-2);
+}
+
+.book-spine[data-spine='3'] {
+    --spine-grad: var(--spine-3);
+}
+
+.book-spine[data-spine='4'] {
+    --spine-grad: var(--spine-4);
+}
+
+.book-spine[data-spine='5'] {
+    --spine-grad: var(--spine-5);
+}
+
+.book-spine[data-spine='6'] {
+    --spine-grad: var(--spine-6);
+}
+
+.book-spine:hover {
+    transform: translateY(-14px) rotateY(-14deg);
+    filter: brightness(1.12);
+    z-index: 3;
+}
+
+.book-spine::before {
+    content: attr(data-title);
+    position: absolute;
+    inset: 12px auto 12px 10px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.92);
+    /* shadow dipertebal agar judul tetap kontras di palet light (oranye
+       lebih terang) dan dark (biru malam) */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65), 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+.book-spine::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    bottom: 10px;
+    width: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+@keyframes book-in {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.bookshelf__base {
+    height: 18px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
+    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.3);
+    transform: rotateY(-8deg) rotateX(4deg);
+}
+
+/* scroll indicator */
+.scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: var(--sp-6);
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--hero-scroll);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.scroll-hint__mouse {
+    width: 22px;
+    height: 36px;
+    border: 2px solid var(--hero-scroll-border);
+    border-radius: 12px;
+    position: relative;
+}
+
+.scroll-hint__mouse::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 3px;
+    height: 7px;
+    margin-left: -1.5px;
+    border-radius: 2px;
+    background: var(--hero-scroll-dot);
+    animation: scroll-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes scroll-dot {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    70% {
+        transform: translateY(12px);
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* ── Search card floating ──────────────────────────────────────── */
+.search-card {
+    position: relative;
+    z-index: 5;
+    margin-top: calc(var(--sp-6) * -1);
+    background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-3);
+    box-shadow: var(--shadow-hover);
+}
+
+.search-form {
+    display: flex;
+    gap: var(--sp-3);
+}
+
+.search-form .input {
+    flex: 1;
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+    background: var(--color-surface);
+}
+
+.search-suggest {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: var(--sp-3);
+    right: var(--sp-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hover);
+    overflow: hidden;
+    display: none;
+    z-index: 10;
+}
+
+.search-suggest.is-open {
+    display: block;
+}
+
+.search-suggest__item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: 10px 14px;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: background-color 0.15s ease;
+}
+
+.search-suggest__item:hover {
+    background: var(--color-paper-soft);
+}
+
+.search-suggest__swatch {
+    width: 28px;
+    height: 38px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.search-suggest__item strong {
+    display: block;
+    font-size: 0.88rem;
+}
+
+.search-suggest__item span {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+}
+
+/* ── Feature cards bernomor ────────────────────────────────────── */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-6);
+}
+
+.feature-card {
+    position: relative;
+    padding: var(--sp-8) var(--sp-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: var(--gradient-sunset);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-card__num {
+    font-family: var(--font-mono);
+    font-size: 3.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-amber);
+    opacity: 0.75;
+    margin-bottom: var(--sp-4);
+}
+
+.feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--sp-2);
+}
+
+.feature-card p {
+    color: var(--color-muted);
+    font-size: 0.92rem;
+    margin: 0;
+}
+
+/* ── CTA banner ────────────────────────────────────────────────── */
+.cta-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: var(--gradient-hero);
+    color: var(--hero-fg);
+    text-align: center;
+    padding: var(--sp-16) var(--sp-8);
+}
+
+.cta-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.cta-banner::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -80px;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 200px;
+    background: var(--gradient-glow);
+    filter: blur(30px);
+    pointer-events: none;
+}
+
+.cta-banner h2 {
+    color: var(--hero-fg);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: var(--sp-3);
+    position: relative;
+    z-index: 1;
+}
+
+.cta-banner p {
+    color: var(--hero-fg-soft);
+    max-width: 480px;
+    margin: 0 auto var(--sp-6);
+    position: relative;
+    z-index: 1;
+}
+
+.cta-banner .btn {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+    .hero {
+        padding-block: var(--sp-12) var(--sp-16);
+        min-height: auto;
+    }
+
+    .hero__grid {
+        grid-template-columns: 1fr;
+        gap: var(--sp-8);
+    }
+
+    .bookshelf__row {
+        height: 320px;
+    }
+
+    /* spine sedikit dikecilkan: tinggi inline (max 329px) hampir
+       menyamai tinggi rak 320px di tablet */
+    .bookshelf__row .book-spine {
+        height: calc(var(--h, 260px) * 0.9);
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .hero__stats {
+        flex-wrap: wrap;
+        gap: var(--sp-5) var(--sp-8);
+    }
+}
+
+@media (max-width: 600px) {
+    .hero__title {
+        font-size: clamp(2rem, 9vw, 2.9rem);
+    }
+
+    .hero__sub {
+        font-size: 1rem;
+    }
+
+    /* rak buku: batasi jumlah buku agar tidak keluar layar */
+    .bookshelf__row {
+        gap: 4px;
+        height: 280px;
+        padding-inline: var(--sp-3);
+    }
+
+    .bookshelf__row .book-spine:nth-child(n + 7) {
+        display: none;
+    }
+
+    /* spine diskalakan proporsional mengikuti rak 280px. Ukuran inline
+       --w/--h dibuat untuk rak desktop 380px — tanpa skala, spine
+       tertinggi (329px) nembus keluar atas rak dan keliatan kegedean. */
+    .bookshelf__row .book-spine {
+        width: calc(var(--w, 46px) * 0.75);
+        height: calc(var(--h, 260px) * 0.75);
+    }
+
+    .bookshelf__base {
+        margin-inline: var(--sp-3);
+    }
+
+    .scroll-hint {
+        display: none;
+    }
+}

@@ -1,0 +1,844 @@
+/* ══════════════════════════════════════════════════════════════════
+   KOMPONEN — tombol, kartu buku, rating, progres, skeleton, dll.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    padding: 0.7rem 1.4rem;
+    border-radius: 14px;
+    border: 0;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+    line-height: 1.2;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn--primary {
+    background: var(--gradient-sunset);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 6px 18px rgba(192, 106, 45, 0.35);
+}
+
+.btn--primary:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 10px 26px rgba(192, 106, 45, 0.45);
+}
+
+.btn--ghost {
+    background: transparent;
+    border: 1.5px solid var(--color-border);
+    color: var(--color-ink);
+}
+
+.btn--ghost:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+    transform: translateY(-2px);
+}
+
+.btn--gold {
+    background: var(--color-amber);
+    color: #22303c;
+    box-shadow: var(--shadow-glow-amber);
+}
+
+.btn--gold:hover {
+    color: #22303c;
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.btn--danger {
+    background: transparent;
+    border: 1.5px solid var(--color-danger);
+    color: var(--color-danger);
+}
+
+.btn--danger:hover {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.btn--light {
+    background: #fff;
+    color: #22303c;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.btn--light:hover {
+    color: #22303c;
+    transform: translateY(-2px);
+}
+
+/* Light mode: tombol di atas panel sunset terang — pakai gradient pekat
+   biar kontras dengan background golden hour yang cerah */
+:root:not([data-theme='dark']) .btn--light {
+    background: var(--gradient-sunset);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 8px 24px rgba(150, 60, 20, 0.35);
+}
+
+:root:not([data-theme='dark']) .btn--light:hover {
+    color: #fff;
+    filter: brightness(1.06);
+}
+
+.btn--sm {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.83rem;
+    border-radius: 10px;
+}
+
+.btn--lg {
+    padding: 0.9rem 2rem;
+    font-size: 1.02rem;
+}
+
+.btn--block {
+    width: 100%;
+}
+
+.btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ── Kartu Buku (book-card) — elemen terpenting ────────────────── */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--sp-6);
+}
+
+.book-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    will-change: transform;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    color: var(--color-ink);
+}
+
+.book-card__cover {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--gradient-twilight);
+    box-shadow: var(--shadow-soft);
+    transition: box-shadow 0.25s ease;
+}
+
+.book-card:hover .book-card__cover {
+    box-shadow: var(--shadow-hover);
+}
+
+.book-card__cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        transparent 55%,
+        rgba(13, 21, 30, 0.45) 100%
+    );
+    opacity: 0.8;
+    transition: opacity 0.25s ease;
+}
+
+.book-card__gradient {
+    position: absolute;
+    inset: 0;
+    background: var(--cover-grad, var(--gradient-twilight));
+    transition: transform 0.35s ease;
+}
+
+.book-card:hover .book-card__gradient {
+    transform: scale(1.04);
+}
+
+/* Gambar cover asli (upload) — mengisi wadah, fallback gradien jika kosong */
+.book-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.book-card:hover .book-cover-img {
+    transform: scale(1.04);
+}
+
+/* Overlay gelap di bawah tidak perlu jika ada gambar cover asli */
+.book-card__cover:has(.book-cover-img)::after {
+    display: none;
+}
+
+.book-card__spine {
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    width: 4px;
+    height: calc(100% - 24px);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.22);
+    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.book-card__title-cover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-6);
+    text-align: center;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.book-card__title-cover em {
+    font-size: 0.72rem;
+    font-style: italic;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    opacity: 0.85;
+    margin-top: 6px;
+}
+
+.book-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(13, 21, 30, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.book-card__rating-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: rgba(13, 21, 30, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-amber);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+}
+
+.book-card:hover .book-card__rating-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.book-card__views {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+}
+
+.book-card__body {
+    padding: var(--sp-3) var(--sp-1) 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.book-card__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: var(--color-ink);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-card__author {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+}
+
+/* ── Kartu buku horizontal (Lanjut Baca) ───────────────────────── */
+.book-card--row {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-4);
+    box-shadow: var(--shadow-soft);
+}
+
+.book-card--row:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.book-card--row .book-card__cover {
+    width: 74px;
+    aspect-ratio: 3 / 4;
+    flex-shrink: 0;
+}
+
+.book-card--row .book-card__body {
+    flex: 1;
+    padding: 0;
+}
+
+/* ── Responsive: kartu buku di layar kecil ─────────────────────── */
+@media (max-width: 600px) {
+    /* Dua kolom biar cover nggak kegedean di HP. auto-fill
+       minmax(170px) di layar 360px jatuhnya 1 kolom selebar layar
+       (~320px) — kepake untuk trending, terbaru, koleksi, cari, dsb. */
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-4);
+    }
+
+    /* Badge jumlah dibaca disembunyikan — di cover ~150px bakal
+       numpuk dengan badge rating di pojok bawah. */
+    .book-card__views {
+        display: none;
+    }
+
+    .book-card__title {
+        font-size: 0.85rem;
+    }
+}
+
+/* ── Rating bintang ────────────────────────────────────────────── */
+.stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--color-amber);
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.stars--lg {
+    font-size: 1.3rem;
+}
+
+.stars--dim {
+    color: var(--color-border);
+}
+
+.stars--input {
+    cursor: pointer;
+    font-size: 1.6rem;
+}
+
+.stars--input .star {
+    transition: transform 0.15s ease;
+    display: inline-block;
+    user-select: none;
+}
+
+.stars--input .star:hover {
+    transform: scale(1.25);
+}
+
+.stars--input .star.is-popped {
+    animation: star-pop 0.3s ease;
+}
+
+@keyframes star-pop {
+    0% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ── Progress bar ──────────────────────────────────────────────── */
+.progress {
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-paper-soft);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress__bar {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-amber)
+    );
+    width: 0;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progress__bar.is-done {
+    background: linear-gradient(90deg, var(--color-amber), #e2b568);
+}
+
+.progress--gold .progress__bar {
+    background: linear-gradient(90deg, var(--color-coral), var(--color-amber));
+}
+
+.progress--thin {
+    height: 4px;
+}
+
+/* ── Skeleton loading ──────────────────────────────────────────── */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-paper-soft);
+    border-radius: var(--radius-md);
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+    );
+    animation: shimmer 1.4s infinite;
+}
+
+.skeleton--cover {
+    aspect-ratio: 3 / 4;
+}
+
+.skeleton--text {
+    height: 14px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 8px;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ── Chip & pill ───────────────────────────────────────────────── */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.chip:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+    transform: translateY(-1px);
+}
+
+.chip--active {
+    background: var(--gradient-sunset);
+    border-color: transparent;
+    color: #fff;
+}
+
+.chip--active:hover {
+    color: #fff;
+}
+
+/* Chip yang membungkus checkbox tercentang — feedback visual saat dipilih */
+.chip:has(input:checked) {
+    background: var(--gradient-sunset);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: var(--shadow-glow-amber);
+}
+
+.chip:has(input:checked):hover {
+    color: #fff;
+}
+
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 11px;
+    border-radius: var(--radius-pill);
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: var(--color-amber-soft);
+    color: var(--color-amber);
+}
+
+/* ── Avatar ────────────────────────────────────────────────────── */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-amber)
+    );
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar--lg {
+    width: 88px;
+    height: 88px;
+    font-size: 1.8rem;
+}
+
+.avatar--sm {
+    width: 26px;
+    height: 26px;
+    font-size: 0.7rem;
+}
+
+.avatar--ring {
+    box-shadow:
+        0 0 0 4px var(--color-bg),
+        0 0 0 7px var(--color-amber);
+}
+
+/* ── Empty state ───────────────────────────────────────────────── */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--sp-16) var(--sp-6);
+    gap: var(--sp-3);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-xl);
+}
+
+.empty-state__icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 6px 18px var(--color-amber-soft));
+}
+
+.empty-state h3 {
+    font-size: 1.35rem;
+    margin: 0;
+}
+
+.empty-state p {
+    color: var(--color-muted);
+    max-width: 420px;
+    margin: 0;
+}
+
+/* ── Alert / toast ─────────────────────────────────────────────── */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--radius-md);
+    font-size: 0.92rem;
+    margin-bottom: var(--sp-4);
+    animation: toast-in 0.35s ease;
+}
+
+.alert--success {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.alert--error {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Pagination pill ───────────────────────────────────────────── */
+.pagination {
+    display: flex;
+    gap: var(--sp-2);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--sp-10);
+}
+
+.pagination .page-item a,
+.pagination .page-item span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-item a:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+    transform: translateY(-1px);
+}
+
+.pagination .page-item.active span {
+    background: var(--gradient-sunset);
+    border-color: transparent;
+    color: #fff;
+}
+
+.pagination .page-item.disabled span {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ── Form ──────────────────────────────────────────────────────── */
+.field {
+    margin-bottom: var(--sp-4);
+}
+
+.field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--color-ink);
+}
+
+.input,
+.select,
+.textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-amber);
+    box-shadow: 0 0 0 4px var(--color-amber-soft);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.form-error {
+    color: var(--color-danger);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* ── Heart favorit ─────────────────────────────────────────────── */
+.heart-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--color-muted);
+    transition: all 0.2s ease;
+}
+
+.heart-btn.is-active {
+    color: #c24a3c;
+    border-color: rgba(194, 74, 60, 0.5);
+    background: rgba(194, 74, 60, 0.08);
+}
+
+/* Heart favorit: terisi penuh saat aktif (Lucide) */
+.heart-btn.is-active .heart-icon svg {
+    fill: currentColor;
+}
+
+.heart-btn:active {
+    transform: scale(0.9);
+}
+
+.heart-btn .heart-icon {
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.heart-btn.is-pop .heart-icon {
+    animation: heart-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heart-pop {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.45) rotate(-8deg);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.heart-btn .burst {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* Burst: target `i` (sebelum createIcons) DAN `svg` (setelah createIcons
+   mengganti <i data-lucide> dengan <svg>) — kalau cuma `i`, 8 heart burst
+   akan terlihat semua karena selectornya tidak nyambung lagi. */
+.heart-btn .burst i,
+.heart-btn .burst svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 0.7rem;
+    font-style: normal;
+    color: #c24a3c;
+    opacity: 0;
+}
+
+.heart-btn.is-pop .burst i,
+.heart-btn.is-pop .burst svg {
+    animation: burst 0.55s ease-out forwards;
+}
+
+@keyframes burst {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.4);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+                calc(-50% + var(--dx, 0px)),
+                calc(-50% + var(--dy, -34px))
+            )
+            scale(1);
+    }
+}

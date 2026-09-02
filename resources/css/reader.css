@@ -1,0 +1,465 @@
+/* ══════════════════════════════════════════════════════════════════
+   READER — mode baca imersif (theme-aware)
+   - light : "Golden Hour"   — kertas krem hangat + terracotta/emas
+   - dark  : "Langit Tengah Malam" — biru pekat + lampu amber
+   ══════════════════════════════════════════════════════════════════ */
+
+.reader-body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.reader {
+    min-height: 100vh;
+    position: relative;
+}
+
+/* glow sentral halus */
+.reader::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 8%, var(--gradient-glow), transparent 60%);
+    opacity: 0.55;
+}
+
+/* progress tipis di atas */
+.reader-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 60;
+    background: color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.reader-progress__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-coral), var(--color-amber));
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+/* toolbar glass */
+.reader-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: 10px var(--sp-4);
+    background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.reader-toolbar::-webkit-scrollbar {
+    display: none;
+}
+
+.reader-toolbar--hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.reader-toolbar__title {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reader-toolbar .icon-btn {
+    background: color-mix(in srgb, var(--color-surface-2) 70%, transparent);
+    border-color: var(--color-border);
+    color: var(--color-muted);
+}
+
+.reader-toolbar .icon-btn:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+}
+
+.reader-toolbar .icon-btn.is-active {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+    background: var(--color-amber-soft);
+}
+
+/* grup zoom PDF */
+.reader-zoom {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.zoom-level {
+    min-width: 54px;
+    padding: 5px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.zoom-level:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+}
+
+/* isi bacaan */
+.reader-content {
+    padding: calc(var(--nav-height) + var(--sp-8)) var(--sp-4) var(--sp-20);
+    max-width: 760px;
+    margin-inline: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.reader-content--pdf {
+    max-width: 1000px;
+}
+
+.reader-text h1 {
+    color: var(--color-ink);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    text-align: center;
+    margin-bottom: var(--sp-8);
+}
+
+.reader-text p {
+    font-size: 1.06rem;
+    line-height: 1.95;
+    margin-bottom: 1.4em;
+    color: var(--color-ink);
+}
+
+.reader-text p::first-letter {
+    font-family: var(--font-display);
+    font-size: 2.4em;
+    float: left;
+    line-height: 0.9;
+    padding-right: 8px;
+    color: var(--color-amber);
+}
+
+.reader-cbz-img {
+    max-width: 100%;
+    margin-inline: auto;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PDF VIEWER — scroll berkelanjutan ala Google Books
+   ══════════════════════════════════════════════════════════════════ */
+
+.reader-pdf {
+    position: relative;
+    min-height: 55vh;
+}
+
+.pdf-pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding-bottom: var(--sp-8);
+}
+
+.pdf-page {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+}
+
+.pdf-page canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.16),
+        0 14px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* halaman gelap: warna di-render via pageColors, canvas jadi transparan */
+.reader-pdf.is-dark-pages .pdf-page canvas {
+    background: transparent;
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.35),
+        0 16px 44px rgba(0, 0, 0, 0.42);
+}
+
+/* loading & error */
+.pdf-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: 120px 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+}
+
+.pdf-loading.is-hidden {
+    display: none;
+}
+
+.pdf-spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-amber);
+    animation: pdf-spin 0.8s linear infinite;
+}
+
+@keyframes pdf-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pdf-error {
+    padding: 120px 0;
+    text-align: center;
+    color: var(--color-danger);
+}
+
+.pdf-error a {
+    color: var(--color-amber);
+    font-weight: 600;
+}
+
+/* navigasi halaman */
+.reader-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-top: var(--sp-10);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--color-border);
+}
+
+.reader-nav__btns .btn {
+    flex: 1;
+    white-space: nowrap;
+}
+
+.reader-nav__page {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+}
+
+.reader-nav__btns {
+    display: flex;
+    gap: var(--sp-3);
+}
+
+.reader-nav .btn {
+    min-width: 130px;
+}
+
+.reader-nav .btn--ghost {
+    border-color: var(--color-border);
+    color: var(--color-ink);
+}
+
+.reader-nav .btn--ghost:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+}
+
+/* hint tombol ? */
+.reader-help {
+    position: fixed;
+    right: var(--sp-5);
+    bottom: var(--sp-5);
+    z-index: 55;
+}
+
+.help-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-4);
+    background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.help-modal.is-open {
+    display: flex;
+}
+
+.help-modal__panel {
+    width: min(480px, 100%);
+    padding: var(--sp-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    animation: help-in 0.3s ease;
+}
+
+@keyframes help-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.help-modal__panel h3 {
+    color: var(--color-ink);
+    margin-bottom: var(--sp-4);
+}
+
+.help-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: 8px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    font-size: 0.88rem;
+}
+
+.help-row kbd {
+    font-family: var(--font-mono);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+    color: var(--color-amber);
+}
+
+.help-modal__close {
+    margin-top: var(--sp-5);
+    width: 100%;
+}
+
+/* mode layar penuh */
+.reader-body:fullscreen .reader-toolbar {
+    padding-block: 6px;
+    font-size: 0.85em;
+}
+
+.reader-body:fullscreen .reader-toolbar__title {
+    font-size: 0.82rem;
+}
+
+@media (max-width: 600px) {
+    .reader-toolbar {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        gap: 8px;
+        padding: 8px 10px;
+    }
+
+    .reader-toolbar .icon-btn {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+    }
+
+    .reader-toolbar__title {
+        display: none;
+    }
+
+    .reader-zoom {
+        gap: 4px;
+    }
+
+    .reader-zoom .zoom-level {
+        min-width: 46px;
+        padding: 4px 6px;
+    }
+
+    .reader-content {
+        /* toolbar wrap 2 baris di mobile → padding atas lebih tinggi */
+        padding: calc(var(--nav-height) + var(--sp-10)) var(--sp-3) var(--sp-16);
+    }
+
+    .reader-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .reader-nav__page {
+        text-align: center;
+    }
+
+    .reader-nav__btns .btn {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .pdf-pages {
+        gap: 20px;
+    }
+
+    .pdf-loading,
+    .pdf-error {
+        padding: 80px 0;
+    }
+
+    .help-modal__panel {
+        padding: var(--sp-5);
+    }
+
+    .help-row {
+        flex-wrap: wrap;
+        gap: var(--sp-2);
+    }
+}
+
+/* HP landscape (tinggi layar pendek): toolbar & konten lebih ringkas
+   biar halaman bacaan tidak ketutup toolbar yang makan ruang vertikal. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .reader-toolbar {
+        padding-block: 6px;
+    }
+
+    .reader-toolbar .icon-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .reader-toolbar__title {
+        max-width: 38vw;
+    }
+
+    .reader-content {
+        padding-top: calc(var(--nav-height) + var(--sp-3));
+    }
+}

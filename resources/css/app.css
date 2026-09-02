@@ -1,0 +1,15 @@
+/* ══════════════════════════════════════════════════════════════════
+   SENJAPUSTAKA 2.0 — Aggregator CSS
+   Urutan impor = urutan kaskade (token → base → komponen → layout → halaman)
+   ══════════════════════════════════════════════════════════════════ */
+
+@import './variables.css';
+@import './base.css';
+@import './components.css';
+@import './layout.css';
+@import './home.css';
+@import './pages.css';
+@import './dashboard.css';
+@import './reader.css';
+@import './auth.css';
+@import './admin.css';

@@ -1,0 +1,267 @@
+/* ══════════════════════════════════════════════════════════════════
+   BASE — reset, tipografi, aksesibilitas, utilitas
+   ══════════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+    background-color: var(--color-bg);
+    background-image: var(--bg-ambient, none);
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-amber);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+    margin: 0 0 0.5em;
+    color: var(--color-ink);
+    font-weight: 700;
+}
+
+p {
+    margin: 0 0 1rem;
+}
+
+/* ── Focus visible (aksesibilitas) ─────────────────────────────── */
+:focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ── Seleksi teks ──────────────────────────────────────────────── */
+::selection {
+    background: var(--color-amber);
+    color: #22303c;
+}
+
+/* ── Scrollbar kustom tipis gradien ────────────────────────────── */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-primary-light), var(--color-amber));
+    border-radius: 999px;
+    border: 2px solid var(--color-bg);
+}
+
+/* ── Container & layout dasar ──────────────────────────────────── */
+.container {
+    width: min(var(--container), 100% - var(--sp-8));
+    margin-inline: auto;
+}
+
+.section {
+    padding-block: var(--sp-12);
+}
+
+.section--tight {
+    padding-block: var(--sp-8);
+}
+
+/* ── Eyebrow & judul section ───────────────────────────────────── */
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-amber);
+    margin: 0 0 var(--sp-2);
+}
+
+.section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-8);
+}
+
+.section-head h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    margin: 0;
+}
+
+.section-head .eyebrow {
+    margin-bottom: var(--sp-2);
+}
+
+.section-head__link {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* ── Teks bantu ────────────────────────────────────────────────── */
+.mono {
+    font-family: var(--font-mono);
+}
+
+.show {
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.text-amber {
+    color: var(--color-amber);
+}
+
+.text-muted {
+    color: var(--color-muted);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.small {
+    font-size: 0.85rem;
+}
+
+/* ── Animasi reveal on scroll ──────────────────────────────────── */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition-delay: var(--d, 0ms);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Tombol ikon emoji dalam lingkaran gradien ─────────────────── */
+.icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    background: linear-gradient(145deg, var(--color-paper-soft), var(--color-amber-soft));
+    box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.icon-chip--sm {
+    width: 36px;
+    height: 36px;
+    font-size: 1.05rem;
+}
+
+/* ── Ikon Lucide (pengganti emoji) ────────────────────────────── */
+svg.lucide {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+}
+
+h1 svg.lucide,
+h2 svg.lucide,
+h3 svg.lucide {
+    color: var(--color-amber);
+}
+
+.icon-chip svg.lucide {
+    color: var(--color-amber);
+}
+
+.streak-card__icon svg.lucide {
+    width: 2.6rem;
+    height: 2.6rem;
+    color: var(--color-amber);
+}
+
+.badge-item__emoji svg.lucide {
+    width: 1.9rem;
+    height: 1.9rem;
+}
+
+.empty-state__icon svg.lucide {
+    width: 3rem;
+    height: 3rem;
+}
+
+.error-page__emoji svg.lucide {
+    width: 3.2rem;
+    height: 3.2rem;
+}
+
+.book-card__badge svg.lucide {
+    width: 0.9em;
+    height: 0.9em;
+}
+
+/* ── Kredit aksen gradient ─────────────────────────────────────── */
+.gradient-text {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ── Reduced motion (aksesibilitas) ────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}

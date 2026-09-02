@@ -1,0 +1,159 @@
+/* ══════════════════════════════════════════════════════════════════
+   SENJAPUSTAKA 2.0 — Design Tokens
+   Satu-satunya sumber warna/radius/shadow/gradien di seluruh situs.
+   Konsep: dua wajah senja — light = "Golden Hour" (sunset cerah:
+   peach → oranye → emas), dark = "Langit Tengah Malam" (biru pekat
+   + lampu amber). Elemen besar (hero/auth/CTA) memakai --gradient-hero
+   dan variabel teks hero yang menyesuaikan tiap mode.
+   ══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Light Mode ("Golden Hour") ────────────────────────────── */
+    /* Kertas krem hangat + tinta espresso + aksen terracotta/emas */
+    --color-bg: #faf0e0;
+    --color-surface: #fdf3e2;
+    --color-surface-2: #f7e9d3;
+    --color-paper-soft: #f4e0c2;
+    --color-ink: #3b2b20;
+    --color-muted: #76685b;
+    --color-border: #e6d3b5;
+    --color-primary: #b3441a;
+    --color-primary-light: #e07337;
+    --color-amber: #d9861c;
+    --color-coral: #e2693a;
+    --color-danger: #b03a2c;
+    --color-amber-soft: rgba(217, 134, 28, 0.14);
+
+    /* ── Typography ────────────────────────────────────────────── */
+    --font-display: 'Fraunces', 'Georgia', serif;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    /* ── Spacing (skala 4px) ───────────────────────────────────── */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-10: 40px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+    --sp-20: 80px;
+    --sp-24: 96px;
+
+    /* ── Radius ────────────────────────────────────────────────── */
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-pill: 999px;
+
+    /* ── Shadows ───────────────────────────────────────────────── */
+    --shadow-soft: 0 4px 24px rgba(96, 58, 26, 0.07);
+    --shadow-hover: 0 16px 40px rgba(96, 58, 26, 0.15);
+    --shadow-glow-amber: 0 0 24px rgba(240, 166, 62, 0.4);
+
+    /* ── Gradient Signature ────────────────────────────────────── */
+    /* Twilight: gradien GELAP — fallback cover buku & reader.
+       Tidak untuk hero (hero pakai --gradient-hero). */
+    --gradient-twilight: linear-gradient(135deg, #5e2410 0%, #8f3a1a 45%, #b0561f 75%, #c26a25 100%);
+    --gradient-sunset: linear-gradient(135deg, #d14f1f 0%, #c96a1c 55%, #d17e24 100%);
+
+    /* ── Spine rak buku (menyesuaikan tema) ────────────────────── */
+    /* 6 variasi gradien spine, didefinisikan per tema: light = palet
+       Golden Hour (oranye senja hangat), dark = Langit Tengah Malam
+       (biru pekat + lampu amber). Dipakai hero bookshelf. */
+    --spine-1: linear-gradient(180deg, #e07337, #b3441a);
+    --spine-2: linear-gradient(180deg, #d9861c, #a8541c);
+    --spine-3: linear-gradient(180deg, #c96a1c, #8f3a1a);
+    --spine-4: linear-gradient(180deg, #e2693a, #b03a2c);
+    --spine-5: linear-gradient(180deg, #d17e24, #9c4a16);
+    --spine-6: linear-gradient(180deg, #b0561f, #5c2c14);
+    --gradient-glow: radial-gradient(ellipse, rgba(240, 166, 62, 0.28), transparent 70%);
+    --gradient-navy: linear-gradient(135deg, #3a1d0e 0%, #5c2c14 100%);
+
+    /* ── Hero / panel besar (menyesuaikan mode) ────────────────── */
+    /* Light: langit golden hour yang TERANG (peach → oranye → emas) */
+    --gradient-hero: linear-gradient(135deg, #ffd9a8 0%, #f8a05c 38%, #ed7d3a 68%, #f2b95c 100%);
+    --hero-fg: #4a2412;
+    --hero-fg-soft: rgba(74, 36, 18, 0.82);
+    --hero-eyebrow: #9c4a16;
+    --hero-title-em: linear-gradient(120deg, #b4531a, #d17e24);
+    --hero-title-shadow: 0 2px 16px rgba(255, 255, 255, 0.35);
+    --hero-ghost-border: rgba(74, 36, 18, 0.45);
+    --hero-ghost-hover: #b4531a;
+    --hero-star: rgba(74, 36, 18, 0.4);
+    --hero-scroll: rgba(74, 36, 18, 0.6);
+    --hero-scroll-border: rgba(74, 36, 18, 0.55);
+    --hero-scroll-dot: #b4531a;
+
+    /* Ambient glow halus di pojok background */
+    --bg-ambient: radial-gradient(1000px 700px at 88% -10%, rgba(240, 166, 62, 0.2), transparent 62%);
+
+    /* Sidebar mobile header (light: senja hangat) */
+    --sidebar-header-grad: linear-gradient(135deg, rgba(240, 166, 62, 0.3), rgba(217, 134, 28, 0.14));
+
+    /* ── Layout ────────────────────────────────────────────────── */
+    --container: 1200px;
+    --nav-height: 72px;
+    --nav-height-shrunk: 60px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Dark Mode ("Langit Tengah Malam") — biru pekat + teks krem hangat
+   ══════════════════════════════════════════════════════════════════ */
+:root[data-theme='dark'] {
+    --color-bg: #0e1924;
+    --color-surface: #16232f;
+    --color-surface-2: #1d2c3b;
+    --color-paper-soft: #13202c;
+    --color-ink: #f0ead9;
+    --color-muted: #a6b4c0;
+    --color-border: #2b3d50;
+    --color-primary: #8fb3d1;
+    --color-primary-light: #a6c6e0;
+    --color-amber: #e0a54f;
+    --color-coral: #d98d4e;
+    --color-danger: #e06a5c;
+    --color-amber-soft: rgba(224, 165, 79, 0.16);
+
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.55);
+    --shadow-glow-amber: 0 0 24px rgba(224, 165, 79, 0.3);
+
+    /* Twilight (dark): langit biru malam — fallback cover & reader */
+    --gradient-twilight: linear-gradient(135deg, #14202e 0%, #1f3a54 55%, #2d5580 100%);
+    --gradient-navy: linear-gradient(135deg, #101b26 0%, #182838 100%);
+    --gradient-sunset: linear-gradient(135deg, #d98d4e 0%, #e0a54f 100%);
+
+    /* Spine rak buku — dark: biru malam dengan beberapa lampu amber */
+    --spine-1: linear-gradient(180deg, #1f3a54, #101b26);
+    --spine-2: linear-gradient(180deg, #2d5580, #1a2c40);
+    --spine-3: linear-gradient(180deg, #d98d4e, #8f5a1e);
+    --spine-4: linear-gradient(180deg, #43596e, #26394e);
+    --spine-5: linear-gradient(180deg, #e0a54f, #a06a1c);
+    --spine-6: linear-gradient(180deg, #1f3a54, #14202e);
+    --gradient-glow: radial-gradient(ellipse, rgba(224, 165, 79, 0.16), transparent 70%);
+
+    /* Hero / panel besar (dark): langit biru malam + teks krem */
+    --gradient-hero: linear-gradient(135deg, #14202e 0%, #1f3a54 55%, #2d5580 100%);
+    --hero-fg: #fff;
+    --hero-fg-soft: rgba(255, 255, 255, 0.88);
+    --hero-eyebrow: #f0d4a4;
+    --hero-title-em: linear-gradient(120deg, #f8e3bc, #e0a54f);
+    --hero-title-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+    --hero-ghost-border: rgba(255, 255, 255, 0.45);
+    --hero-ghost-hover: #f0d4a4;
+    --hero-star: #f8e3bc;
+    --hero-scroll: rgba(255, 255, 255, 0.7);
+    --hero-scroll-border: rgba(255, 255, 255, 0.6);
+    --hero-scroll-dot: #f0d4a4;
+
+    --bg-ambient: radial-gradient(1000px 700px at 88% -10%, rgba(45, 85, 128, 0.22), transparent 62%);
+
+    /* Sidebar mobile header (dark: biru malam) */
+    --sidebar-header-grad: linear-gradient(135deg, rgba(16, 30, 46, 0.4), rgba(61, 107, 143, 0.22));
+}
+

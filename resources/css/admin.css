@@ -1,0 +1,271 @@
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN — sidebar gelap, stat cards gradien, tabel, badge pill
+   ══════════════════════════════════════════════════════════════════ */
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    background: #101b26;
+    color: #93a1ad;
+    padding: var(--sp-6) 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.admin-sidebar .logo {
+    color: #f0ead9;
+    padding: 0 var(--sp-6);
+    margin-bottom: var(--sp-8);
+    font-size: 1.3rem;
+}
+
+.admin-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 var(--sp-3);
+    flex: 1;
+}
+
+.admin-sidebar__nav a {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: 11px 14px;
+    border-radius: 12px;
+    color: #93a1ad;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-sidebar__nav a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f0ead9;
+}
+
+.admin-sidebar__nav a.is-active {
+    background: linear-gradient(135deg, rgba(39, 74, 102, 0.9), rgba(61, 107, 143, 0.65));
+    color: #fff;
+}
+
+.admin-sidebar__foot {
+    padding: var(--sp-4) var(--sp-6);
+    border-top: 1px solid #2b3d50;
+    font-size: 0.8rem;
+}
+
+.admin-main {
+    padding: var(--sp-8);
+    min-width: 0;
+}
+
+.admin-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-8);
+}
+
+.admin-topbar h1 {
+    font-size: 1.7rem;
+    margin: 0;
+}
+
+/* grid dua kolom di dashboard admin */
+.admin-dash-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-5);
+}
+
+/* stat cards */
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-8);
+}
+
+.admin-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+}
+
+.admin-stat__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-amber));
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.admin-stat__num {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.admin-stat__label {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+}
+
+/* tables */
+.admin-table-wrap {
+    overflow-x: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: var(--sp-8);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 640px;
+}
+
+.admin-table th {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-paper-soft);
+}
+
+.admin-table td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: var(--color-surface-2);
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-table__actions {
+    display: flex;
+    gap: var(--sp-2);
+    justify-content: flex-end;
+}
+
+.admin-table__actions .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.78rem;
+}
+
+/* cover mini di tabel */
+.table-cover {
+    width: 34px;
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* panel kartu */
+.admin-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: var(--sp-6);
+    margin-bottom: var(--sp-6);
+}
+
+.admin-card h2 {
+    font-size: 1.2rem;
+    margin-bottom: var(--sp-5);
+}
+
+.admin-card__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+}
+
+@media (max-width: 900px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dash-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+        position: static;
+        height: auto;
+    }
+
+    .admin-sidebar__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 var(--sp-3) var(--sp-4);
+    }
+
+    .admin-card__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-topbar {
+        flex-wrap: wrap;
+    }
+
+    .admin-main {
+        padding: var(--sp-6) var(--sp-4);
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-topbar h1 {
+        font-size: 1.4rem;
+    }
+
+    .admin-stat {
+        gap: var(--sp-3);
+        padding: var(--sp-4);
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 12px;
+    }
+}
