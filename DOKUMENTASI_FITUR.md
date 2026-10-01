@@ -282,15 +282,6 @@ Three hard boundaries keep it from becoming page-wide wobble: (1) `pointermove` 
 - Transitions 150–250ms, motion only ever conveys state.
 - Focus, hover, active, disabled states exist on every control; `prefers-reduced-motion` kills all of it — including the hero parallax and its scroll sink.
 
-### 5. Anti-slop rules (enforced)
-
-- ❌ Purple/blue SaaS gradient hero → the hero gradient is a _sky_, drawn from dusk tokens; it never appears on a card or button.
-- ❌ Glassmorphism, glow, blur halos, neumorphism → removed from hero, level badge, reader, admin. The sun is a flat disk with a flat ring, not a bloom.
-- ❌ Cold navy/indigo chrome → admin sidebar, PWA icons, `theme-color`, favicon all recolored to the warm palette.
-- ❌ Grey/neutral-only system → warm paper + one ember.
-- ❌ Serif on UI controls; emoji as structural icons; reinvented affordances.
-- ❌ Element that tracks the cursor 1:1, or anything that wobbles the whole page → the hero disk lags the pointer by design (`±20px` max, lerped, bounded to `.hero`) and the horizon underneath it never moves.
-- ✅ Verified contrast: body 15.6:1, muted 5.8:1, CTA 5.3:1, field borders 3.1:1, spine foil 4.9:1, all dusk-sky text ≥5.0:1 — WCAG AA in **both** modes.
 
 ### 6. Rebuild checklist (all passing)
 
