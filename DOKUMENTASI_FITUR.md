@@ -182,50 +182,7 @@ Click stars on book page → POST /review {book_id, rating, comment}
 
 ---
 
-## Real Catalog — 14 Books
-
-Seed data is no longer fictional. `DatabaseSeeder` runs: badges → users → `BookCatalogSeeder` → `EngagementSeeder` → newsletter.
-
-| #   | Title                                                        | Author           | Pages | Year | Publisher        | Categories                        |
-| --- | ------------------------------------------------------------ | ---------------- | ----- | ---- | ---------------- | --------------------------------- |
-| 1   | 3726 MDPL                                                    | Nurwina Sari     | 153   | 2024 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
-| 2   | Hujan                                                        | Tere Liye        | 315   | 2016 | Gramedia Pustaka | Fiksi, Novel                      |
-| 3   | Laut Bercerita                                               | Leila S. Chudori | 394   | 2017 | Gramedia Pustaka | Romantis, Misteri, Sejarah, Novel |
-| 4   | Cantik Itu Luka                                              | Eka Kurniawan    | 490   | 2002 | Gramedia Pustaka | Fiksi, Sejarah, Novel             |
-| 5   | Tentang Kamu                                                 | Tere Liye        | 648   | 2016 | Republika        | Fiksi, Romantis, Misteri, Novel   |
-| 6   | Rindu                                                        | Tere Liye        | 669   | 2014 | —                | Fiksi, Romantis, Novel            |
-| 7   | Janji                                                        | Tere Liye        | 927   | 2021 | —                | Misteri, Novel                    |
-| 8   | Kudasai                                                      | Brian Khrisna    | 454   | 2019 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
-| 9   | Bandung Menjelang Pagi                                       | Brian Khrisna    | 308   | 2024 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
-| 10  | Sisi Tergelap Surga                                          | Brian Khrisna    | 308   | 2023 | Gramedia Pustaka | Fiksi, Novel                      |
-| 11  | Seporsi Mie Ayam Sebelum Mati                                | Brian Khrisna    | 217   | 2025 | Gramedia Pustaka | Fiksi, Self-Help, Novel           |
-| 12  | Parable                                                      | Brian Khrisna    | 692   | 2021 | mediakita        | Fiksi, Misteri, Novel             |
-| 13  | Malioboro at Midnight                                        | Brian Khrisna    | 430   | —    | bukune           | Fiksi, Misteri, Novel             |
-| 14  | Toumei na Yoru ni Kakeru Kimi to, Me ni Mienai Koi wo Shita. | Shima Nanigashi  | 99    | 2024 | —                | Komik, Romantis                   |
-
-- **13 categories** — the `Novel` category, dropped in an earlier cleanup, is back; the other 12 are unchanged.
-- **6 authors** — exactly the authors who wrote these books; the 23 placeholder authors are gone from `/penulis`.
-- **4 publishers** — only ones provable from the files themselves: Gramedia Pustaka, mediakita, bukune, Republika. The 5 invented publishers were removed. `Rindu`, `Janji` and the Toumei CBZ have no publisher **because no source in the repo states one**.
-- **14 files**: 13 PDF + 1 CBZ. Every `file_path` and `cover_image` pair was checked against the filesystem after seeding; `books.content` is always `NULL` (the reader renders the file, not a DB blob).
-
-### Where the data came from
-
-| Field          | Source                                                                                                                |
-| -------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 8 descriptions | Restored **verbatim** from `database/database.sqlite.backup-20260812-011300`                                          |
-| 1 description  | Toumei, restored verbatim from `storage/logs/laravel.log`                                                             |
-| 5 descriptions | Written as factual synopses from each book's own back cover, copyright page, or opening pages                         |
-| Year / pages   | `pdfinfo`, copyright pages, back covers — never invented                                                              |
-| Cover pairings | Backup's `file_path`↔`cover_image` for the 8 backed-up books; mtime order (validated against those 8) for the other 7 |
-
-Two years/publishers are deliberately `null` rather than guessed: **Malioboro at Midnight** has no colophon in its scan (only a PDF creation date of 2024-02-21, which is the scan, not the printing), and **Rindu**'s publisher is never named in the file. Likewise, **Rindu** and **Tentang Kamu** have no back-cover blurb anywhere in their PDFs (both are image-only scans with a watermark text layer), so their descriptions are built from what is verifiable — the opening pages, the epigraph, the publisher, and the award — instead of a plot summary nobody can source here.
-
-### Two bugs fixed along the way
-
-- **CBZ merge.** Toumei shipped as two chapter CBZs; they are merged into one 99-page file so the book has a single continuous reading experience. Both originals are still on disk.
-- **CBZ page order.** `ReaderController::cbzImageIndex()` used to trust the ZIP entry order, which is _lexical_ — so page 2 rendered as `10.png`. It now sorts entries by their numeric filename prefix.
-
-### Demo engagement is a separate, optional step
+## Demo engagement is a separate, optional step
 
 `php artisan catalog:reseed` deletes books, pivots, placeholder authors/series/publishers **and** all engagement (reviews, reading progress, favorites, bookmarks — 51 / 7 / 2 / 0 rows at the time of writing), then replants the 14 books. It does **not** recreate engagement — the existing demo data is reset to zero on purpose.
 
@@ -351,7 +308,7 @@ Three hard boundaries keep it from becoming page-wide wobble: (1) `pointermove` 
 - [x] Service worker cache bumped to `senja-v12` so returning users pick up the new skin.
 - [x] Navigation honesty fixed: a failed navigation no longer falls back to the cached homepage. The SW now only serves a cached page when the URL matches **exactly**, otherwise it returns an explicit `503` offline page — so the address bar and the content can never disagree. Only `response.ok` (2xx) documents are cached, and `main.js` calls `registration.update()` on load so the fix is not held back by the browser's update throttle.
 - [x] Service worker no longer registers on `localhost` / `127.0.0.1` / `[::1]` — a locally built bundle can no longer pin itself to its own cache.
-- [x] Catalog replaced end to end: 14 real books, 13 categories, 6 authors, 4 publishers. Checked on `/`, `/koleksi` (both pages), `/peringkat`, `/kategori`, `/penulis`, `/cari`, `/dashboard`, `/buku/*`, `/baca/*` — zero placeholder titles anywhere, every `file_path` and `cover_image` present on disk.
+- [x] Catalog replaced end to end: 14 real books, 13 categories, 6 authors, 4 publishers. Checked on `/`, `/koleksi` (both pages), `/peringkat`, `/kategori`, `/penulis`, `/cari`, `/dashboard`, `/buku/*`, `/baca/*` — zero placeholder titles anywhere.
 
 ---
 
