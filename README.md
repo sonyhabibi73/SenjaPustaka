@@ -86,13 +86,3 @@ npm run lint:check
 npm run format:check
 npm run types:check
 ```
-
-## Keamanan repositori
-
-File konfigurasi lokal dan rahasia tidak disertakan dalam Git. Ini mencakup `.env`, variasi `.env.*` (kecuali `.env.example`), sertifikat/kunci privat, berkas kredensial, dan folder `secrets/`. Dokumen internal `desain.md` juga sengaja tidak dipublikasikan.
-
-Jangan pernah menaruh kata sandi, API key, token, atau berkas produksi di `.env.example` maupun berkas lain yang akan dikomit.
-
-## Lisensi
-
-Lisensi belum ditentukan. Tambahkan file `LICENSE` sebelum mendistribusikan proyek.
