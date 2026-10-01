@@ -2,6 +2,7 @@
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -72,4 +73,40 @@ test('buku tidak terpublikasi menghasilkan 404', function () {
     $book = Book::factory()->create(['is_published' => false]);
 
     $this->get(route('books.show', $book))->assertNotFound();
+});
+
+test('halaman profil dan notifikasi dapat dirender', function () {
+    $user = User::where('email', 'user@senjapustaka.test')->first();
+    $this->actingAs($user);
+
+    $this->get(route('profile.edit'))->assertOk()->assertSee('Profil');
+    $this->get(route('notifications.index'))->assertOk();
+});
+
+test('semua halaman panel admin dapat dirender tanpa error', function () {
+    $admin = User::where('email', 'admin@senjapustaka.test')->first();
+    $this->actingAs($admin);
+
+    $pages = [
+        route('admin.kategori.index'),
+        route('admin.penulis.index'),
+        route('admin.penerbit.index'),
+        route('admin.series.index'),
+        route('admin.review.index'),
+        route('admin.newsletter.index'),
+        route('admin.activity-logs.index'),
+        route('admin.buku.create'),
+    ];
+
+    foreach ($pages as $url) {
+        $this->get($url)->assertOk();
+    }
+});
+
+test('halaman error 404 dan 403 ditampilkan dengan tampilan baru', function () {
+    $this->get('/halaman-yang-tidak-ada')->assertNotFound();
+
+    $user = User::where('email', 'user@senjapustaka.test')->first();
+    $this->actingAs($user);
+    $this->get(route('admin.dashboard'))->assertForbidden();
 });

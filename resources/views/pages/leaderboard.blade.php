@@ -43,8 +43,6 @@
             </div>
         @endif
 
-        <div class="podium__fallback"></div>
-
         @foreach ($users as $index => $user)
             @if ($index >= 3)
                 <div class="leader-row reveal {{ auth()->id() === $user->id ? 'is-me' : '' }}" style="--d: {{ $index * 30 }}ms">

@@ -15,8 +15,8 @@ test('pengguna baru dapat mendaftar', function () {
     $this->post(route('register'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
-        'password' => 'password123',
-        'password_confirmation' => 'password123',
+        'password' => 'SecurePass123!@#',
+        'password_confirmation' => 'SecurePass123!@#',
     ])->assertRedirect(route('dashboard'));
 
     $this->assertAuthenticated();

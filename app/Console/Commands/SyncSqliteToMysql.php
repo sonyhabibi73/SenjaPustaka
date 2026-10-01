@@ -43,7 +43,7 @@ class SyncSqliteToMysql extends Command
         $mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $mysql->exec('SET NAMES utf8mb4');
 
-        $mysqlDb = (string) $mysql->query('SELECT DATABASE()')->fetchColumn();
+        $mysqlDb = (string) $this->query($mysql, 'SELECT DATABASE()')->fetchColumn();
 
         $this->info('Sumber: '.$sqlitePath);
         $this->info('Target: MySQL database `'.$mysqlDb.'` @ '.config('database.connections.mysql.host'));
@@ -58,9 +58,10 @@ class SyncSqliteToMysql extends Command
         $sqlite = new PDO('sqlite:'.$sqlitePath);
         $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $tables = $sqlite
-            ->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
-            ->fetchAll(PDO::FETCH_COLUMN);
+        $tables = $this->query(
+            $sqlite,
+            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        )->fetchAll(PDO::FETCH_COLUMN);
 
         $report = [];
         $warnings = 0;
@@ -77,9 +78,10 @@ class SyncSqliteToMysql extends Command
                     continue;
                 }
 
-                $exists = $mysql
-                    ->query('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='.$mysql->quote($mysqlDb).' AND table_name='.$mysql->quote($table))
-                    ->fetchColumn();
+                $exists = $this->query(
+                    $mysql,
+                    'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='.$mysql->quote($mysqlDb).' AND table_name='.$mysql->quote($table)
+                )->fetchColumn();
 
                 if (! $exists) {
                     $this->warn("Tabel `{$table}` belum ada di MySQL — jalankan `php artisan migrate` dulu.");
@@ -88,7 +90,7 @@ class SyncSqliteToMysql extends Command
                     continue;
                 }
 
-                $cols = $sqlite->query("PRAGMA table_info(`{$table}`)")->fetchAll(PDO::FETCH_ASSOC);
+                $cols = $this->query($sqlite, "PRAGMA table_info(`{$table}`)")->fetchAll(PDO::FETCH_ASSOC);
                 $names = array_column($cols, 'name');
 
                 $invalid = array_values(array_filter($names, fn ($c) => ! $this->validIdentifier($c)));
@@ -129,8 +131,8 @@ class SyncSqliteToMysql extends Command
                     continue;
                 }
 
-                $sqliteCount = (int) $sqlite->query("SELECT COUNT(*) FROM `{$table}`")->fetchColumn();
-                $mysqlCount = (int) $mysql->query("SELECT COUNT(*) FROM `{$table}`")->fetchColumn();
+                $sqliteCount = (int) $this->query($sqlite, "SELECT COUNT(*) FROM `{$table}`")->fetchColumn();
+                $mysqlCount = (int) $this->query($mysql, "SELECT COUNT(*) FROM `{$table}`")->fetchColumn();
 
                 $report[] = [
                     'table' => $table,
@@ -155,11 +157,11 @@ class SyncSqliteToMysql extends Command
 
                     $sourceIds = array_map(
                         'strval',
-                        $sqlite->query("SELECT `{$pkCol}` FROM `{$row['table']}`")->fetchAll(PDO::FETCH_COLUMN)
+                        $this->query($sqlite, "SELECT `{$pkCol}` FROM `{$row['table']}`")->fetchAll(PDO::FETCH_COLUMN)
                     );
                     $mysqlIds = array_map(
                         'strval',
-                        $mysql->query("SELECT `{$pkCol}` FROM `{$row['table']}`")->fetchAll(PDO::FETCH_COLUMN)
+                        $this->query($mysql, "SELECT `{$pkCol}` FROM `{$row['table']}`")->fetchAll(PDO::FETCH_COLUMN)
                     );
 
                     $missing = array_diff($mysqlIds, $sourceIds);
@@ -208,6 +210,8 @@ class SyncSqliteToMysql extends Command
     /**
      * Salin satu tabel dari SQLite ke MySQL memakai INSERT ... ON DUPLICATE KEY UPDATE.
      *
+     * @param  list<string>  $names  Nama kolom sumber (sudah divalidasi validIdentifier)
+     * @param  list<string>  $pk  Nama kolom primary key
      * @return array{0: int, 1: int, 2: int} [inserted, updated, unchanged]
      */
     private function syncTable(PDO $sqlite, PDO $mysql, string $table, array $names, array $pk): array
@@ -223,8 +227,12 @@ class SyncSqliteToMysql extends Command
             $sql .= " ON DUPLICATE KEY UPDATE {$set}";
         }
 
-        $select = $sqlite->query("SELECT {$colList} FROM `{$table}`");
+        $select = $this->query($sqlite, "SELECT {$colList} FROM `{$table}`");
         $insert = $mysql->prepare($sql);
+
+        if ($insert === false) {
+            throw new \RuntimeException("Gagal menyiapkan statement insert untuk tabel {$table}.");
+        }
 
         $inserted = 0;
         $updated = 0;
@@ -250,5 +258,23 @@ class SyncSqliteToMysql extends Command
     private function validIdentifier(string $name): bool
     {
         return preg_match('/^[A-Za-z0-9_]+$/', $name) === 1;
+    }
+
+    /**
+     * Jalankan query dan pastikan selalu mengembalikan PDOStatement.
+     * PDO mode EXCEPTION melempar error sendiri; penjaga `false` ini untuk
+     * keamanan tipe statis bila ERRMODE diubah.
+     *
+     * @throws \RuntimeException
+     */
+    private function query(PDO $pdo, string $sql): \PDOStatement
+    {
+        $stmt = $pdo->query($sql);
+
+        if ($stmt === false) {
+            throw new \RuntimeException('Query gagal: '.$sql);
+        }
+
+        return $stmt;
     }
 }

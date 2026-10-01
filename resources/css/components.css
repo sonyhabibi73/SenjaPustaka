@@ -1,5 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════
    KOMPONEN — tombol, kartu buku, rating, progres, skeleton, dll.
+   Prinsip: flat 1px border, radius kecil, hover halus, tanpa glow.
    ══════════════════════════════════════════════════════════════════ */
 
 /* ── Buttons ───────────────────────────────────────────────────── */
@@ -9,110 +10,90 @@
     justify-content: center;
     gap: var(--sp-2);
     padding: 0.7rem 1.4rem;
-    border-radius: 14px;
-    border: 0;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.92rem;
+    font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        filter 0.2s ease,
         background-color 0.2s ease,
+        border-color 0.2s ease,
         color 0.2s ease,
-        border-color 0.2s ease;
+        transform 0.15s ease;
     line-height: 1.2;
 }
 
 .btn:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
 }
 
+/* Tombol utama = bara senja. Ini satu-satunya CTA yang menyala. */
 .btn--primary {
-    background: var(--gradient-sunset);
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
-    box-shadow: 0 6px 18px rgba(192, 106, 45, 0.35);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-color: var(--color-accent);
 }
 
 .btn--primary:hover {
-    color: #fff;
-    transform: translateY(-2px);
-    filter: brightness(1.06);
-    box-shadow: 0 10px 26px rgba(192, 106, 45, 0.45);
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    color: var(--color-on-accent);
 }
 
 .btn--ghost {
-    background: transparent;
-    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    border-color: var(--color-border);
     color: var(--color-ink);
 }
 
 .btn--ghost:hover {
-    border-color: var(--color-amber);
-    color: var(--color-amber);
-    transform: translateY(-2px);
+    border-color: var(--color-border-strong);
+    color: var(--color-ink);
 }
 
 .btn--gold {
-    background: var(--color-amber);
-    color: #22303c;
-    box-shadow: var(--shadow-glow-amber);
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-ink);
 }
 
 .btn--gold:hover {
-    color: #22303c;
-    transform: translateY(-2px);
-    filter: brightness(1.05);
+    border-color: var(--color-border-strong);
 }
 
 .btn--danger {
     background: transparent;
-    border: 1.5px solid var(--color-danger);
+    border-color: var(--color-border);
     color: var(--color-danger);
 }
 
 .btn--danger:hover {
-    background: var(--color-danger);
-    color: #fff;
+    background: var(--color-danger-soft);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
 }
 
 .btn--light {
-    background: #fff;
-    color: #22303c;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    background: var(--color-bg);
+    color: var(--color-ink);
+    border-color: var(--color-border);
 }
 
 .btn--light:hover {
-    color: #22303c;
-    transform: translateY(-2px);
-}
-
-/* Light mode: tombol di atas panel sunset terang — pakai gradient pekat
-   biar kontras dengan background golden hour yang cerah */
-:root:not([data-theme='dark']) .btn--light {
-    background: var(--gradient-sunset);
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
-    box-shadow: 0 8px 24px rgba(150, 60, 20, 0.35);
-}
-
-:root:not([data-theme='dark']) .btn--light:hover {
-    color: #fff;
-    filter: brightness(1.06);
+    border-color: var(--color-border-strong);
+    color: var(--color-ink);
 }
 
 .btn--sm {
-    padding: 0.45rem 0.9rem;
-    font-size: 0.83rem;
-    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.85rem;
 }
 
 .btn--lg {
-    padding: 0.9rem 2rem;
-    font-size: 1.02rem;
+    padding: 0.85rem 1.7rem;
+    font-size: 0.98rem;
 }
 
 .btn--block {
@@ -120,15 +101,15 @@
 }
 
 .btn[disabled] {
-    opacity: 0.55;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
 }
 
-/* ── Kartu Buku (book-card) — elemen terpenting ────────────────── */
+/* ── Kartu Buku (book-card) ────────────────────────────────────── */
 .book-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: var(--sp-6);
 }
 
@@ -138,14 +119,9 @@
     flex-direction: column;
     text-decoration: none;
     color: var(--color-ink);
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-    will-change: transform;
 }
 
 .book-card:hover {
-    transform: translateY(-8px);
     color: var(--color-ink);
 }
 
@@ -154,67 +130,32 @@
     aspect-ratio: 3 / 4;
     border-radius: var(--radius-md);
     overflow: hidden;
-    background: var(--gradient-twilight);
-    box-shadow: var(--shadow-soft);
-    transition: box-shadow 0.25s ease;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
 }
 
-.book-card:hover .book-card__cover {
-    box-shadow: var(--shadow-hover);
-}
-
-.book-card__cover::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        180deg,
-        transparent 55%,
-        rgba(13, 21, 30, 0.45) 100%
-    );
-    opacity: 0.8;
-    transition: opacity 0.25s ease;
-}
-
-.book-card__gradient {
-    position: absolute;
-    inset: 0;
-    background: var(--cover-grad, var(--gradient-twilight));
-    transition: transform 0.35s ease;
-}
-
-.book-card:hover .book-card__gradient {
-    transform: scale(1.04);
-}
-
-/* Gambar cover asli (upload) — mengisi wadah, fallback gradien jika kosong */
 .book-cover-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.35s ease;
 }
 
-.book-card:hover .book-cover-img {
-    transform: scale(1.04);
-}
-
-/* Overlay gelap di bawah tidak perlu jika ada gambar cover asli */
-.book-card__cover:has(.book-cover-img)::after {
-    display: none;
+.book-card__gradient {
+    position: absolute;
+    inset: 0;
+    background: var(--cover-grad, var(--color-surface-2));
 }
 
 .book-card__spine {
     position: absolute;
-    top: 12px;
-    left: 10px;
-    width: 4px;
-    height: calc(100% - 24px);
+    top: 14px;
+    left: 12px;
+    width: 3px;
+    height: calc(100% - 28px);
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.22);
-    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.35);
 }
 
 .book-card__title-cover {
@@ -226,22 +167,21 @@
     justify-content: center;
     padding: var(--sp-6);
     text-align: center;
-    color: #fff;
+    color: var(--color-ink);
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 500;
     font-size: 1.05rem;
     line-height: 1.3;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     z-index: 1;
 }
 
 .book-card__title-cover em {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-style: italic;
     font-family: var(--font-sans);
-    font-weight: 500;
-    opacity: 0.85;
-    margin-top: 6px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin-top: 8px;
 }
 
 .book-card__badge {
@@ -254,50 +194,53 @@
     gap: 5px;
     padding: 4px 10px;
     border-radius: var(--radius-pill);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    background: rgba(13, 21, 30, 0.45);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
 }
 
 .book-card__rating-badge {
     position: absolute;
-    right: 10px;
+    /* Tengah-bawah: satu-satunya elemen di sana, jadi tidak mungkin tabrakan
+       dengan badge lain (badge "Trending" ada di kiri-atas). */
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 10px;
     z-index: 2;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 3px 9px;
+    gap: 6px;
+    /* Sampul 176px (grid) / bisa lebih sempit di layar kecil — jangan meluber. */
+    max-width: calc(100% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 4px 9px;
     border-radius: var(--radius-pill);
-    background: rgba(13, 21, 30, 0.55);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: var(--color-amber);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
-    opacity: 0;
-    transform: translateY(4px);
-    transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
+    font-size: 0.72rem;
+    font-weight: 500;
 }
 
-.book-card:hover .book-card__rating-badge {
-    opacity: 1;
-    transform: translateY(0);
+.book-card__rating {
+    color: var(--color-ink);
+}
+
+.book-card__meta-sep {
+    color: var(--color-muted);
 }
 
 .book-card__views {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-    z-index: 2;
-    color: rgba(255, 255, 255, 0.9);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-muted);
     font-size: 0.72rem;
     font-family: var(--font-mono);
 }
@@ -310,10 +253,9 @@
 }
 
 .book-card__title {
-    font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.95rem;
-    line-height: 1.3;
+    line-height: 1.4;
     color: var(--color-ink);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -322,8 +264,9 @@
 }
 
 .book-card__author {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--color-muted);
+    font-weight: 400;
 }
 
 /* ── Kartu buku horizontal (Lanjut Baca) ───────────────────────── */
@@ -335,11 +278,11 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--sp-4);
-    box-shadow: var(--shadow-soft);
+    transition: border-color 0.2s ease;
 }
 
 .book-card--row:hover {
-    box-shadow: var(--shadow-hover);
+    border-color: var(--color-border-strong);
 }
 
 .book-card--row .book-card__cover {
@@ -355,17 +298,20 @@
 
 /* ── Responsive: kartu buku di layar kecil ─────────────────────── */
 @media (max-width: 600px) {
-    /* Dua kolom biar cover nggak kegedean di HP. auto-fill
-       minmax(170px) di layar 360px jatuhnya 1 kolom selebar layar
-       (~320px) — kepake untuk trending, terbaru, koleksi, cari, dsb. */
+    /* Dua kolom biar cover nggak kegedean di HP. */
     .book-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--sp-4);
     }
 
-    /* Badge jumlah dibaca disembunyikan — di cover ~150px bakal
-       numpuk dengan badge rating di pojok bawah. */
-    .book-card__views {
+    /* Di layar sempit pil hanya menampilkan rating; bagian views dan
+       pemisahnya disembunyikan, dan pil kosong (tanpa rating) ikut hilang. */
+    .book-card__views,
+    .book-card__meta-sep {
+        display: none;
+    }
+
+    .book-card__rating-badge--views {
         display: none;
     }
 
@@ -378,13 +324,13 @@
 .stars {
     display: inline-flex;
     gap: 2px;
-    color: var(--color-amber);
+    color: var(--color-warn-text);
     font-size: 0.95rem;
     letter-spacing: 1px;
 }
 
 .stars--lg {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
 }
 
 .stars--dim {
@@ -393,7 +339,7 @@
 
 .stars--input {
     cursor: pointer;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
 }
 
 .stars--input .star {
@@ -403,7 +349,7 @@
 }
 
 .stars--input .star:hover {
-    transform: scale(1.25);
+    transform: scale(1.15);
 }
 
 .stars--input .star.is-popped {
@@ -412,7 +358,7 @@
 
 @keyframes star-pop {
     0% {
-        transform: scale(1.3);
+        transform: scale(1.25);
     }
     100% {
         transform: scale(1);
@@ -421,31 +367,27 @@
 
 /* ── Progress bar ──────────────────────────────────────────────── */
 .progress {
-    height: 8px;
+    height: 6px;
     border-radius: var(--radius-pill);
-    background: var(--color-paper-soft);
+    background: var(--color-surface-2);
     overflow: hidden;
-    position: relative;
+    border: 1px solid var(--color-border);
 }
 
 .progress__bar {
     height: 100%;
     border-radius: var(--radius-pill);
-    background: linear-gradient(
-        90deg,
-        var(--color-primary),
-        var(--color-amber)
-    );
+    background: var(--color-ink);
     width: 0;
     transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .progress__bar.is-done {
-    background: linear-gradient(90deg, var(--color-amber), #e2b568);
+    background: var(--color-success);
 }
 
 .progress--gold .progress__bar {
-    background: linear-gradient(90deg, var(--color-coral), var(--color-amber));
+    background: var(--color-ink);
 }
 
 .progress--thin {
@@ -456,7 +398,7 @@
 .skeleton {
     position: relative;
     overflow: hidden;
-    background: var(--color-paper-soft);
+    background: var(--color-surface-2);
     border-radius: var(--radius-md);
 }
 
@@ -468,10 +410,19 @@
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.35),
+        rgba(255, 255, 255, 0.5),
         transparent
     );
     animation: shimmer 1.4s infinite;
+}
+
+[data-theme='dark'] .skeleton::after {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.06),
+        transparent
+    );
 }
 
 .skeleton--cover {
@@ -484,9 +435,83 @@
     margin-bottom: 8px;
 }
 
+.skeleton--title {
+    height: 18px;
+    width: 80%;
+    border-radius: var(--radius-pill);
+    margin-bottom: 8px;
+}
+
+.skeleton--subtitle {
+    height: 12px;
+    width: 60%;
+    border-radius: var(--radius-pill);
+    margin-bottom: 8px;
+}
+
+.skeleton--avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.skeleton--card {
+    height: 280px;
+    border-radius: var(--radius-md);
+}
+
 @keyframes shimmer {
     100% {
         transform: translateX(100%);
+    }
+}
+
+/* ── Loading spinner ────────────────────────────────────────────── */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-ink);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Loading overlay ────────────────────────────────────────────── */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ── Skeleton grid untuk book cards ────────────────────────────── */
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--sp-6);
+}
+
+@media (max-width: 600px) {
+    .skeleton-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-4);
     }
 }
 
@@ -498,43 +523,40 @@
     padding: 5px 12px;
     border-radius: var(--radius-pill);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 500;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-ink);
     text-decoration: none;
     transition:
         border-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .chip:hover {
-    border-color: var(--color-amber);
-    color: var(--color-amber);
-    transform: translateY(-1px);
+    border-color: var(--color-border-strong);
 }
 
 .chip--active {
-    background: var(--gradient-sunset);
-    border-color: transparent;
-    color: #fff;
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
 }
 
 .chip--active:hover {
-    color: #fff;
+    color: var(--color-bg);
 }
 
 /* Chip yang membungkus checkbox tercentang — feedback visual saat dipilih */
 .chip:has(input:checked) {
-    background: var(--gradient-sunset);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: var(--shadow-glow-amber);
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
 }
 
 .chip:has(input:checked):hover {
-    color: #fff;
+    color: var(--color-bg);
 }
 
 .badge-pill {
@@ -544,9 +566,10 @@
     padding: 3px 11px;
     border-radius: var(--radius-pill);
     font-size: 0.72rem;
-    font-weight: 600;
-    background: var(--color-amber-soft);
-    color: var(--color-amber);
+    font-weight: 500;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-muted);
 }
 
 /* ── Avatar ────────────────────────────────────────────────────── */
@@ -557,14 +580,11 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: #fff;
-    background: linear-gradient(
-        135deg,
-        var(--color-primary),
-        var(--color-amber)
-    );
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--color-muted);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
     flex-shrink: 0;
     overflow: hidden;
 }
@@ -578,7 +598,7 @@
 .avatar--lg {
     width: 88px;
     height: 88px;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
 }
 
 .avatar--sm {
@@ -588,9 +608,7 @@
 }
 
 .avatar--ring {
-    box-shadow:
-        0 0 0 4px var(--color-bg),
-        0 0 0 7px var(--color-amber);
+    border-color: var(--color-border-strong);
 }
 
 /* ── Empty state ───────────────────────────────────────────────── */
@@ -602,17 +620,17 @@
     padding: var(--sp-16) var(--sp-6);
     gap: var(--sp-3);
     background: var(--color-surface);
-    border: 1px dashed var(--color-border);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
 }
 
 .empty-state__icon {
-    font-size: 3rem;
-    filter: drop-shadow(0 6px 18px var(--color-amber-soft));
+    font-size: 2.6rem;
+    color: var(--color-faint);
 }
 
 .empty-state h3 {
-    font-size: 1.35rem;
+    font-size: 1.2rem;
     margin: 0;
 }
 
@@ -622,7 +640,11 @@
     margin: 0;
 }
 
-/* ── Alert / toast ─────────────────────────────────────────────── */
+.empty-state .btn {
+    margin-top: var(--sp-4);
+}
+
+/* ── Alert / toast: pastel datar ───────────────────────────────── */
 .alert {
     display: flex;
     align-items: flex-start;
@@ -635,19 +657,21 @@
 }
 
 .alert--success {
-    background: var(--color-primary);
-    color: #fff;
+    background: var(--color-success-soft);
+    color: var(--color-success);
+    border: 1px solid transparent;
 }
 
 .alert--error {
-    background: var(--color-danger);
-    color: #fff;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    border: 1px solid transparent;
 }
 
 @keyframes toast-in {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-8px);
     }
     to {
         opacity: 1;
@@ -655,7 +679,37 @@
     }
 }
 
-/* ── Pagination pill ───────────────────────────────────────────── */
+/* ── Skip to content link (accessibility) ──────────────────────── */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--sp-4);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--color-ink);
+    color: var(--color-bg);
+    border-radius: var(--radius-sm);
+    z-index: 10000;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: var(--sp-4);
+}
+
+/* ── Visually hidden (screen reader only) ──────────────────────── */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ── Pagination ────────────────────────────────────────────────── */
 .pagination {
     display: flex;
     gap: var(--sp-2);
@@ -669,29 +723,27 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 42px;
-    height: 42px;
+    min-width: 40px;
+    height: 40px;
     padding: 0 12px;
-    border-radius: var(--radius-pill);
-    font-weight: 600;
+    border-radius: var(--radius-md);
+    font-weight: 500;
     font-size: 0.9rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-ink);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .pagination .page-item a:hover {
-    border-color: var(--color-amber);
-    color: var(--color-amber);
-    transform: translateY(-1px);
+    border-color: var(--color-border-strong);
 }
 
 .pagination .page-item.active span {
-    background: var(--gradient-sunset);
-    border-color: transparent;
-    color: #fff;
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
 }
 
 .pagination .page-item.disabled span {
@@ -707,9 +759,58 @@
 .field label {
     display: block;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 6px;
     color: var(--color-ink);
+}
+
+/* Baris checkbox / opsi singkat dalam form */
+.field--row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: 44px;
+    margin-bottom: var(--sp-4);
+    flex-wrap: wrap;
+}
+
+.field--row label {
+    display: inline;
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--color-muted);
+}
+
+.field--row input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    min-height: 0;
+    min-width: 0;
+    accent-color: var(--color-ink);
+    flex-shrink: 0;
+}
+
+.field__link {
+    margin-left: auto;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Tombol yang terlihat seperti tautan (dipakai di dalam <form>) */
+.link-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.link-btn:hover {
+    color: var(--color-muted);
 }
 
 .input,
@@ -717,8 +818,8 @@
 .textarea {
     width: 100%;
     padding: 0.7rem 0.9rem;
-    border-radius: var(--radius-sm);
-    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-field-border);
     background: var(--color-surface);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -732,8 +833,20 @@
 .select:focus,
 .textarea:focus {
     outline: none;
-    border-color: var(--color-amber);
-    box-shadow: 0 0 0 4px var(--color-amber-soft);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: var(--color-faint);
+}
+
+/* Galat validasi: tanda + teks, jangan hanya warna */
+.input[aria-invalid='true'],
+.select[aria-invalid='true'],
+.textarea[aria-invalid='true'] {
+    border-color: var(--color-danger);
 }
 
 .textarea {
@@ -755,19 +868,22 @@
     justify-content: center;
     width: 46px;
     height: 46px;
-    border-radius: 14px;
-    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
     background: var(--color-surface);
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     cursor: pointer;
     color: var(--color-muted);
-    transition: all 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .heart-btn.is-active {
-    color: #c24a3c;
-    border-color: rgba(194, 74, 60, 0.5);
-    background: rgba(194, 74, 60, 0.08);
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--color-danger-soft);
 }
 
 /* Heart favorit: terisi penuh saat aktif (Lucide) */
@@ -776,16 +892,16 @@
 }
 
 .heart-btn:active {
-    transform: scale(0.9);
+    transform: scale(0.94);
 }
 
 .heart-btn .heart-icon {
     display: inline-block;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.2s ease;
 }
 
 .heart-btn.is-pop .heart-icon {
-    animation: heart-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: heart-pop 0.4s ease;
 }
 
 @keyframes heart-pop {
@@ -793,7 +909,7 @@
         transform: scale(1);
     }
     40% {
-        transform: scale(1.45) rotate(-8deg);
+        transform: scale(1.3);
     }
     100% {
         transform: scale(1);
@@ -807,8 +923,7 @@
 }
 
 /* Burst: target `i` (sebelum createIcons) DAN `svg` (setelah createIcons
-   mengganti <i data-lucide> dengan <svg>) — kalau cuma `i`, 8 heart burst
-   akan terlihat semua karena selectornya tidak nyambung lagi. */
+   mengganti <i data-lucide> dengan <svg>). */
 .heart-btn .burst i,
 .heart-btn .burst svg {
     position: absolute;
@@ -816,7 +931,7 @@
     left: 50%;
     font-size: 0.7rem;
     font-style: normal;
-    color: #c24a3c;
+    color: var(--color-danger);
     opacity: 0;
 }
 

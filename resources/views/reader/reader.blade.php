@@ -4,26 +4,26 @@
 
 @section('reader-content')
 
-<div class="reader" id="reader-app" data-book-id="{{ $book->id }}" data-mode="{{ $mode }}" data-pages="{{ $book->pages }}" data-start-page="{{ $startPage }}">
+<div class="reader" id="reader-app" data-book-id="{{ $book->id }}" data-mode="{{ $mode }}" data-pages="{{ $book->pages }}" data-start-page="{{ $startPage }}" role="main" aria-label="Pembaca buku {{ $book->title }}">
 
-    <div class="reader-progress">
+    <div class="reader-progress" role="progressbar" aria-label="Progres membaca" aria-valuenow="{{ $startPage }}" aria-valuemin="1" aria-valuemax="{{ $book->pages }}">
         <div class="reader-progress__bar" id="reader-progress-fill" style="width:{{ $mode === 'pdf' ? '0%' : ($startPage / max(1, $book->pages) * 100) . '%' }}"></div>
     </div>
 
-    <div class="reader-toolbar" id="reader-toolbar">
-        <a href="{{ route('books.show', $book) }}" class="icon-btn" aria-label="Kembali">←</a>
-        <span class="reader-toolbar__title">{{ $book->title }}</span>
+    <div class="reader-toolbar" id="reader-toolbar" role="toolbar" aria-label="Toolbar pembaca">
+        <a href="{{ route('books.show', $book) }}" class="icon-btn" aria-label="Kembali ke detail buku"><span aria-hidden="true">←</span></a>
+        <span class="reader-toolbar__title" aria-hidden="true">{{ $book->title }}</span>
 
         @if ($mode === 'text')
-            <button type="button" class="icon-btn" id="reader-zoom-out" aria-label="Perkecil teks">−</button>
-            <button type="button" class="icon-btn" id="reader-zoom-in" aria-label="Perbesar teks">＋</button>
+            <button type="button" class="icon-btn" id="reader-zoom-out" aria-label="Perkecil teks"><span aria-hidden="true">−</span></button>
+            <button type="button" class="icon-btn" id="reader-zoom-in" aria-label="Perbesar teks"><span aria-hidden="true">＋</span></button>
         @elseif ($mode === 'pdf')
             <div class="reader-zoom" role="group" aria-label="Perbesaran dokumen">
-                <button type="button" class="icon-btn" id="pdf-zoom-out" aria-label="Perkecil dokumen">−</button>
-                <button type="button" class="zoom-level" id="pdf-zoom-level" title="Klik untuk reset ke 100%">100%</button>
-                <button type="button" class="icon-btn" id="pdf-zoom-in" aria-label="Perbesar dokumen">＋</button>
+                <button type="button" class="icon-btn" id="pdf-zoom-out" aria-label="Perkecil dokumen"><span aria-hidden="true">−</span></button>
+                <button type="button" class="zoom-level" id="pdf-zoom-level" title="Klik untuk reset ke 100%" aria-label="Reset zoom ke 100%">100%</button>
+                <button type="button" class="icon-btn" id="pdf-zoom-in" aria-label="Perbesar dokumen"><span aria-hidden="true">＋</span></button>
             </div>
-            <button type="button" class="icon-btn" id="pdf-dark" aria-label="Halaman gelap"><i data-lucide="moon" aria-hidden="true"></i></button>
+            <button type="button" class="icon-btn" id="pdf-dark" aria-label="Halaman gelap" aria-pressed="false"><i data-lucide="moon" aria-hidden="true"></i></button>
         @endif
 
         <button
@@ -31,10 +31,11 @@
             class="icon-btn {{ $bookmark ? 'is-active' : '' }}"
             id="reader-bookmark"
             aria-label="{{ $bookmark ? 'Hapus bookmark' : 'Tambahkan bookmark' }}"
+            aria-pressed="{{ $bookmark ? 'true' : 'false' }}"
         ><i data-lucide="bookmark" aria-hidden="true"></i></button>
         <button type="button" class="icon-btn" id="reader-fullscreen" aria-label="Layar penuh"><i data-lucide="maximize" aria-hidden="true"></i></button>
-        <button type="button" class="icon-btn" id="reader-theme" aria-label="Ganti tema"><i data-lucide="moon" aria-hidden="true"></i></button>
-        <button type="button" class="icon-btn" id="reader-help" aria-label="Bantuan">?</button>
+        <button type="button" class="icon-btn" id="reader-theme" aria-label="Ganti tema" aria-pressed="false"><i data-lucide="moon" aria-hidden="true"></i></button>
+        <button type="button" class="icon-btn" id="reader-help" aria-label="Bantuan keyboard"><span aria-hidden="true">?</span></button>
     </div>
 
     <div class="reader-content {{ $mode === 'pdf' ? 'reader-content--pdf' : '' }}">

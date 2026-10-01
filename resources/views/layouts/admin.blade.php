@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#101b26">
+    <meta name="theme-color" content="#f9f4ec">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,16 +34,17 @@
                 <a href="{{ route('admin.review.index') }}" class="{{ request()->routeIs('admin.review.*') ? 'is-active' : '' }}"><i data-lucide="star" aria-hidden="true"></i> Review</a>
                 <a href="{{ route('admin.user.index') }}" class="{{ request()->routeIs('admin.user.*') ? 'is-active' : '' }}"><i data-lucide="users" aria-hidden="true"></i> Pengguna</a>
                 <a href="{{ route('admin.newsletter.index') }}" class="{{ request()->routeIs('admin.newsletter.*') ? 'is-active' : '' }}"><i data-lucide="mail" aria-hidden="true"></i> Newsletter</a>
+                <a href="{{ route('admin.activity-logs.index') }}" class="{{ request()->routeIs('admin.activity-logs.*') ? 'is-active' : '' }}"><i data-lucide="scroll-text" aria-hidden="true"></i> Log Aktivitas</a>
             </nav>
             <div class="admin-sidebar__foot">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div class="admin-sidebar__user">
                     <span class="avatar" style="width:32px;height:32px;font-size:0.8rem;">{{ auth()->user()->initials() }}</span>
                     <span>
-                        <strong style="color:#f0ead9;font-size:0.85rem;display:block;">{{ auth()->user()->name }}</strong>
+                        <strong>{{ auth()->user()->name }}</strong>
                         <small>{{ auth()->user()->is_admin ? 'Administrator' : 'Pengguna' }}</small>
                     </span>
                 </div>
-                <a href="{{ route('home') }}" style="color:#93a1ad;font-size:0.8rem;">← Kembali ke situs</a>
+                <a href="{{ route('home') }}" class="admin-sidebar__back">← Kembali ke situs</a>
                 <form method="POST" action="{{ route('logout') }}" style="margin-top:10px;">
                     @csrf
                     <button type="submit" class="btn btn--ghost btn--sm btn--block">Keluar</button>

@@ -104,7 +104,7 @@ class BookController extends Controller
         $book->publisher_id = $data['publisher_id'] ?? null;
         $book->description = $data['description'] ?? null;
         $book->content = $data['content'] ?? null;
-        $book->cover_color = $data['cover_color'] ?? '#2F5D52';
+        $book->cover_color = $data['cover_color'] ?? '#B4491A';
         $book->pages = $data['pages'];
         $book->year = $data['year'] ?? null;
         $book->language = $data['language'] ?? 'id';

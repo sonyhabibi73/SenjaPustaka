@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="SenjaPustaka — perpustakaan digital yang terasa hidup. Baca ebook PDF & CBZ, kumpulkan poin, dan naik level pembaca.">
-    <meta name="theme-color" content="#101b26">
+    <meta name="theme-color" content="#f9f4ec">
     <meta property="og:title" content="SenjaPustaka">
     <meta property="og:description" content="Perpustakaan digital yang terasa hidup — baca, kumpulkan poin, naik level.">
     <meta property="og:type" content="website">
@@ -26,21 +26,29 @@
     @vite(['resources/css/app.css', 'resources/js/main.js'])
 </head>
 <body data-page="@yield('page', '')">
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
 
     @include('partials.navbar')
     @include('partials.sidebar')
 
-    <main class="main">
+    <main class="main" id="main-content" role="main" tabindex="-1">
         <div class="container">
             @if (session('success'))
-                <div class="alert alert--success">✨ {{ session('success') }}</div>
+                <div class="alert alert--success" role="alert" aria-live="polite">
+                    <i data-lucide="circle-check" aria-hidden="true"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
             @endif
             @if (session('error'))
-                <div class="alert alert--error"><i data-lucide="triangle-alert" aria-hidden="true"></i> {{ session('error') }}</div>
+                <div class="alert alert--error" role="alert" aria-live="assertive">
+                    <i data-lucide="triangle-alert" aria-hidden="true"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
             @endif
             @if (isset($errors) && $errors->any())
-                <div class="alert alert--error">
-                    <span><i data-lucide="triangle-alert" aria-hidden="true"></i> {{ $errors->first() }}</span>
+                <div class="alert alert--error" role="alert" aria-live="assertive">
+                    <i data-lucide="triangle-alert" aria-hidden="true"></i>
+                    <span>{{ $errors->first() }}</span>
                 </div>
             @endif
         </div>

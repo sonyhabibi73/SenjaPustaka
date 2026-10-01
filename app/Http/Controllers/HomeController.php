@@ -13,15 +13,17 @@ class HomeController extends Controller
     public function index(): View
     {
         $bookshelf = Book::where('is_published', true)->inRandomOrder()->limit(9)->get();
+        // 12 = aman di 4, 5, dan 6 kolom (.book-grid auto-fill):
+        // 6+6, 5+5+2, 4+4+4 — tidak pernah nyisa 1 kartu sendirian.
         $trending = Book::where('is_published', true)
             ->with('author')
             ->orderByDesc('views')
-            ->limit(6)
+            ->limit(12)
             ->get();
         $latest = Book::where('is_published', true)
             ->with('author')
             ->latest()
-            ->limit(8)
+            ->limit(12)
             ->get();
         $categories = Category::withCount(['books' => fn ($q) => $q->where('is_published', true)])
             ->orderByDesc('books_count')

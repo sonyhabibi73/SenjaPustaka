@@ -20,10 +20,15 @@
                 {{ $badge }}
             </span>
         @endif
-        @if ($book->rating_count > 0)
-            <span class="book-card__rating-badge">★ {{ number_format($book->rating_avg, 1) }} dari 5</span>
-        @endif
-        <span class="book-card__views"><i data-lucide="eye" aria-hidden="true"></i> {{ number_format($book->views) }} dibaca</span>
+        {{-- Satu pil gabungan: rating + jumlah pembaca. Dua elemen terpisah pernah
+             saling menimpa karena sama-sama menempel di `bottom` sampul 176px. --}}
+        <span class="book-card__rating-badge{{ $book->rating_count > 0 ? '' : ' book-card__rating-badge--views' }}">
+            @if ($book->rating_count > 0)
+                <span class="book-card__rating">★ {{ number_format($book->rating_avg, 1) }}</span>
+                <span class="book-card__meta-sep" aria-hidden="true">·</span>
+            @endif
+            <span class="book-card__views"><i data-lucide="eye" aria-hidden="true"></i> {{ number_format($book->views) }} dibaca</span>
+        </span>
     </div>
     <div class="book-card__body">
         <span class="book-card__title">{{ $book->title }}</span>

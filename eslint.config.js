@@ -113,6 +113,9 @@ export default [
             'bootstrap/ssr',
             'tailwind.config.js',
             'vite.config.ts',
+            // Dot-directories (agent/tooling skills, editor config, CI helpers)
+            // are environment artifacts, not application source.
+            '.*/**',
             'resources/js/actions/**',
             'resources/js/components/ui/*',
             'resources/js/routes/**',

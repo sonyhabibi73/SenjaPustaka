@@ -1,5 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════
-   ADMIN — sidebar gelap, stat cards gradien, tabel, badge pill
+   ADMIN — sidebar tinta sepia, stat cards datar, tabel, badge pill
+   Palet mengikuti Senja: gelap = arang hangat, bukan biru malam.
    ══════════════════════════════════════════════════════════════════ */
 
 .admin-layout {
@@ -9,8 +10,8 @@
 }
 
 .admin-sidebar {
-    background: #101b26;
-    color: #93a1ad;
+    background: var(--color-primary);
+    color: var(--color-faint);
     padding: var(--sp-6) 0;
     position: sticky;
     top: 0;
@@ -21,7 +22,7 @@
 }
 
 .admin-sidebar .logo {
-    color: #f0ead9;
+    color: var(--color-on-primary);
     padding: 0 var(--sp-6);
     margin-bottom: var(--sp-8);
     font-size: 1.3rem;
@@ -40,27 +41,30 @@
     align-items: center;
     gap: var(--sp-3);
     padding: 11px 14px;
-    border-radius: 12px;
-    color: #93a1ad;
+    border-radius: var(--radius-md);
+    color: var(--color-faint);
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .admin-sidebar__nav a:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #f0ead9;
+    background: color-mix(in srgb, var(--color-on-primary) 8%, transparent);
+    color: var(--color-on-primary);
 }
 
 .admin-sidebar__nav a.is-active {
-    background: linear-gradient(135deg, rgba(39, 74, 102, 0.9), rgba(61, 107, 143, 0.65));
-    color: #fff;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
 }
 
 .admin-sidebar__foot {
     padding: var(--sp-4) var(--sp-6);
-    border-top: 1px solid #2b3d50;
+    border-top: 1px solid
+        color-mix(in srgb, var(--color-on-primary) 16%, transparent);
     font-size: 0.8rem;
 }
 
@@ -116,8 +120,9 @@
     align-items: center;
     justify-content: center;
     font-size: 1.3rem;
-    background: linear-gradient(135deg, var(--color-primary-light), var(--color-amber));
-    color: #fff;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-accent);
     flex-shrink: 0;
 }
 
@@ -198,6 +203,92 @@
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
+}
+
+/* filter bar (log aktivitas) */
+.admin-filters {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.admin-filters__group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-filters__group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
+.admin-filters__group .input {
+    min-width: 150px;
+}
+
+/* detail record (log aktivitas) */
+.admin-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--sp-4) var(--sp-5);
+}
+
+.admin-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.admin-detail-item--full {
+    grid-column: 1 / -1;
+}
+
+.admin-detail-item__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+}
+
+.admin-detail-item__value {
+    font-size: 0.95rem;
+    color: var(--color-ink);
+}
+
+.admin-detail-json {
+    margin: 0;
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--color-paper-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* sidebar footer */
+.admin-sidebar__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-sidebar__user strong {
+    color: var(--color-on-primary);
+    font-size: 0.85rem;
+    display: block;
+}
+
+.admin-sidebar__back {
+    color: var(--color-faint);
+    font-size: 0.8rem;
 }
 
 /* panel kartu */

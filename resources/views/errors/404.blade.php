@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Halaman Tidak Ditemukan · SenjaPustaka</title>
-    <meta name="theme-color" content="#101b26">
+    <title>404 - Halaman Tidak Ditemukan</title>
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
     <script>
         (() => {
@@ -13,23 +12,17 @@
             document.documentElement.dataset.theme = stored ?? system;
         })();
     </script>
-    @vite(['resources/css/app.css', 'resources/js/main.js'])
+    @vite(['resources/css/app.css'])
 </head>
-<body>
-    <main class="error-page">
-        <div class="error-page__card">
-            <div class="error-page__code">404</div>
-            <div class="error-page__emoji"><i data-lucide="telescope" aria-hidden="true"></i></div>
-            <h1 class="error-page__title">Halaman Tidak Ditemukan</h1>
-            <p class="error-page__desc">
-                Sepertinya halaman atau buku yang kamu cari tersesat di lorong senja.
-                Yuk kembali dan coba cari yang lain.
-            </p>
-            <div class="error-page__actions">
-                <a href="{{ url('/') }}" class="btn btn--primary">← Kembali ke Beranda</a>
-                <a href="{{ url('/koleksi') }}" class="btn btn--ghost"><i data-lucide="library-big" aria-hidden="true"></i> Cari Buku</a>
-            </div>
+<body class="error-page">
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1>Halaman Tidak Ditemukan</h1>
+        <p>Maaf, halaman yang Anda cari tidak ada atau telah dipindahkan.</p>
+        <div class="error-actions">
+            <a href="{{ route('home') }}" class="btn btn--primary">Kembali ke Beranda</a>
+            <a href="{{ route('library') }}" class="btn btn--ghost">Jelajahi Koleksi</a>
         </div>
-    </main>
+    </div>
 </body>
 </html>

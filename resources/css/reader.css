@@ -7,7 +7,9 @@
 .reader-body {
     background: var(--color-bg);
     color: var(--color-ink);
-    transition: background-color 0.4s ease, color 0.4s ease;
+    transition:
+        background-color 0.4s ease,
+        color 0.4s ease;
 }
 
 .reader {
@@ -15,14 +17,16 @@
     position: relative;
 }
 
-/* glow sentral halus */
+/* lapis tipis kertas senja — datar, tanpa glow */
 .reader::before {
     content: '';
     position: fixed;
-    inset: 0;
+    inset: 0 0 auto;
+    height: 220px;
     pointer-events: none;
-    background: radial-gradient(ellipse at 50% 8%, var(--gradient-glow), transparent 60%);
-    opacity: 0.55;
+    background: var(--senja-sky);
+    opacity: 0.75;
+    z-index: 0;
 }
 
 /* progress tipis di atas */
@@ -38,7 +42,7 @@
 
 .reader-progress__bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--color-coral), var(--color-amber));
+    background: var(--color-accent);
     width: 0;
     transition: width 0.3s ease;
 }
@@ -60,7 +64,9 @@
     border-bottom: 1px solid var(--color-border);
     overflow-x: auto;
     scrollbar-width: none;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
 }
 
 .reader-toolbar::-webkit-scrollbar {
@@ -116,7 +122,9 @@
     font-family: var(--font-mono);
     font-size: 0.75rem;
     cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .zoom-level:hover {
@@ -349,7 +357,8 @@
     align-items: center;
     gap: var(--sp-4);
     padding: 8px 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border-bottom: 1px solid
+        color-mix(in srgb, var(--color-border) 70%, transparent);
     font-size: 0.88rem;
 }
 

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('author_id')->constrained()->cascadeOnDelete();
             $table->foreignId('publisher_id')->nullable()->constrained()->nullOnDelete();
             $table->longText('description')->nullable();
-            $table->string('cover_color', 7)->default('#274A66');
+            $table->string('cover_color', 7)->default('#B4491A');
             $table->string('file_path')->nullable();
             $table->longText('content')->nullable();
             $table->unsignedInteger('pages')->default(1);

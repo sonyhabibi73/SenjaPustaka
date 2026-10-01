@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -28,8 +29,13 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
+        // Only admins can change admin status
+        if (! auth()->user()->is_admin) {
+            abort(403);
+        }
+
         $data = $request->validate([
-            'is_admin' => ['nullable'],
+            'is_admin' => ['nullable', 'boolean'],
         ]);
 
         if ($user->id === auth()->id() && $request->has('is_admin') && ! $request->boolean('is_admin')) {
@@ -38,6 +44,14 @@ class UserController extends Controller
 
         $user->is_admin = $request->boolean('is_admin');
         $user->save();
+
+        // Log admin role changes for audit trail
+        Log::info('Admin role changed', [
+            'changed_by' => auth()->id(),
+            'target_user' => $user->id,
+            'new_is_admin' => $user->is_admin,
+            'ip' => $request->ip(),
+        ]);
 
         return back()->with('success', 'Peran pengguna diperbarui.');
     }

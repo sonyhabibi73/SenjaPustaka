@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
@@ -29,7 +30,12 @@ class ProfileController extends Controller
             'bio' => ['nullable', 'string', 'max:1000'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'current_password' => ['nullable', 'required_with:new_password'],
-            'new_password' => ['nullable', 'min:8', 'confirmed'],
+            'new_password' => ['nullable', 'confirmed', Password::min(12)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()],
         ]);
 
         if ($request->hasFile('avatar')) {
@@ -63,9 +69,8 @@ class ProfileController extends Controller
             $user->password = $data['new_password'];
         }
 
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-        $user->bio = $data['bio'] ?? null;
+        // Whitelist only safe fields - prevents mass assignment
+        $user->fill($request->only(['name', 'email', 'bio']));
         $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui. ✨');

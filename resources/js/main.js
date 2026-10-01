@@ -369,6 +369,121 @@ const lucideIcons = {
         });
     }
 
+    /* ── Parallax langit hero — kursor + scroll sink ──────────────
+       Tiga lapis dengan magnitudo bertingkat. Yang jauh bergerak
+       paling sedikit, dan itulah yang menciptakan kedalaman:
+         bintang   ±6px  (lerp 0.035) — lapis terjauh
+         matahari  ±20px (lerp 0.06)  — lapis menengah
+         rak       tilt  (lerp 0.12)  — terdekat (initTilt)
+       Dibatasi elemen .hero, jadi berhenti sendiri di atas kartu
+       search; garis horizon & bidai rak tetap patokan statis.
+       Mati saat prefers-reduced-motion, dan kursor dimatikan
+       bila tidak ada pointer presisi (HP). */
+    function initHeroParallax() {
+        const hero = document.querySelector('.hero');
+
+        if (!hero || prefersReducedMotion) {
+            return;
+        }
+
+        let rect = hero.getBoundingClientRect();
+        let sinkFrame = null;
+
+        /* Lapis 1 — matahari tenggelam mengikuti scroll hero.
+           Tidak butuh kursor, jadi tetap hidup di HP. */
+        const updateSink = () => {
+            sinkFrame = null;
+            rect = hero.getBoundingClientRect();
+            const span = rect.height * 0.7 || 1;
+            const p = Math.min(1, Math.max(0, -rect.top / span));
+            hero.style.setProperty('--px-sun-sink', `${(p * 36).toFixed(1)}px`);
+        };
+
+        const scheduleSink = () => {
+            if (sinkFrame === null) {
+                sinkFrame = requestAnimationFrame(updateSink);
+            }
+        };
+
+        window.addEventListener('scroll', scheduleSink, { passive: true });
+        window.addEventListener('resize', scheduleSink, { passive: true });
+        updateSink();
+
+        /* Lapis 2 & 3 — parallax kursor (hanya pointer presisi). */
+        if (!window.matchMedia('(pointer: fine)').matches) {
+            return;
+        }
+
+        let clientX = null;
+        let clientY = null;
+        let sunX = 0;
+        let sunY = 0;
+        let starX = 0;
+        let starY = 0;
+        let raf = null;
+
+        const loop = () => {
+            const inside = clientX !== null;
+            const nx =
+                inside && rect.width
+                    ? (clientX - rect.left) / rect.width - 0.5
+                    : 0;
+            const ny =
+                inside && rect.height
+                    ? (clientY - rect.top) / rect.height - 0.5
+                    : 0;
+
+            const tSunX = nx * 40;
+            const tSunY = ny * 20;
+            const tStarX = nx * 12;
+            const tStarY = ny * 6;
+
+            sunX += (tSunX - sunX) * 0.06;
+            sunY += (tSunY - sunY) * 0.06;
+            starX += (tStarX - starX) * 0.035;
+            starY += (tStarY - starY) * 0.035;
+
+            hero.style.setProperty('--px-sun-x', `${sunX.toFixed(2)}px`);
+            hero.style.setProperty('--px-sun-y', `${sunY.toFixed(2)}px`);
+            hero.style.setProperty('--px-star-x', `${starX.toFixed(2)}px`);
+            hero.style.setProperty('--px-star-y', `${starY.toFixed(2)}px`);
+
+            const settled =
+                Math.abs(tSunX - sunX) < 0.02 &&
+                Math.abs(tSunY - sunY) < 0.02 &&
+                Math.abs(tStarX - starX) < 0.02 &&
+                Math.abs(tStarY - starY) < 0.02;
+
+            raf = settled ? null : requestAnimationFrame(loop);
+        };
+
+        const kick = () => {
+            if (raf === null) {
+                raf = requestAnimationFrame(loop);
+            }
+        };
+
+        hero.addEventListener(
+            'pointermove',
+            (e) => {
+                clientX = e.clientX;
+                clientY = e.clientY;
+                kick();
+            },
+            { passive: true },
+        );
+
+        hero.addEventListener(
+            'pointerleave',
+            () => {
+                clientX = null;
+                clientY = null;
+                kick();
+            },
+            { passive: true },
+        );
+    }
+
     /* ── Polling notifikasi (30 detik) ────────────────────────── */
     function initNotificationPolling() {
         const dot = document.querySelector('.icon-btn__dot[data-notif-dot]');
@@ -694,6 +809,7 @@ const lucideIcons = {
         initSidebar();
         initTilt();
         initReveal();
+        initHeroParallax();
         initNotificationPolling();
         initAlerts();
         initSearchSuggest();
@@ -707,9 +823,28 @@ const lucideIcons = {
         // Ganti ikon emoji → Lucide (<i data-lucide> → <svg>)
         createIcons({ icons: lucideIcons });
 
-        // Service worker (PWA) — hanya di production
-        if ('serviceWorker' in navigator && import.meta.env?.PROD) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        // Service worker (PWA) — hanya di production.
+        // Lokal (localhost/127.0.0.1/::1) sengaja dilewati: SW men-cache aset,
+        // sehingga hasil `npm run build` di mesin dev sering tertahan cache dan
+        // terlihat usang padahal server sudah sehat.
+        const isLocalHost = ['localhost', '127.0.0.1', '[::1]'].includes(
+            window.location.hostname,
+        );
+
+        if (
+            'serviceWorker' in navigator &&
+            import.meta.env?.PROD &&
+            !isLocalHost
+        ) {
+            navigator.serviceWorker
+                .register('/sw.js')
+                .then((reg) => {
+                    // Paksa cek versi terbaru tiap muat halaman. Tanpa ini,
+                    // update script SW bisa ditahan throttle browser sampai
+                    // 24 jam — perbaikan logisnya telat sampai ke pengguna.
+                    reg.update().catch(() => {});
+                })
+                .catch(() => {});
         }
     });
 })();

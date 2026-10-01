@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Akses Ditolak · SenjaPustaka</title>
-    <meta name="theme-color" content="#101b26">
+    <meta name="theme-color" content="#f9f4ec">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
     <script>
         (() => {

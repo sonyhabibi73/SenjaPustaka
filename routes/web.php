@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\SeriesController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
@@ -40,9 +43,13 @@ Route::get('/tentang', [AboutController::class, 'index'])->name('about');
 Route::get('/kebijakan-privasi', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/syarat-ketentuan', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/kontak', [ContactController::class, 'show'])->name('contact');
-Route::post('/kontak', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/kontak', [ContactController::class, 'send'])
+    ->name('contact.send')
+    ->middleware('throttle:5,10');
 Route::get('/cari', [SearchController::class, 'index'])->name('search');
-Route::get('/cari/saran', [SearchController::class, 'suggest'])->name('search.suggest');
+Route::get('/cari/saran', [SearchController::class, 'suggest'])
+    ->name('search.suggest')
+    ->middleware('throttle:30,1');
 
 // ── Auth ──────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -50,6 +57,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/masuk', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::get('/daftar', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/daftar', [AuthController::class, 'register'])->middleware('throttle:5,1');
+
+    // Password Reset
+    Route::get('/lupa-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:3,1');
+    Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update')->middleware('throttle:5,1');
+});
+
+// Email Verification
+Route::middleware('auth')->group(function () {
+    Route::get('/verifikasi-email', [VerificationController::class, 'notice'])->name('verification.notice');
+    Route::post('/verifikasi-email/kirim', [VerificationController::class, 'send'])->name('verification.send')->middleware('throttle:3,1');
+    Route::get('/verifikasi-email/{token}', [VerificationController::class, 'verify'])->name('verification.verify');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -66,13 +86,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifikasi/baca-semua', [NotificationController::class, 'readAll'])->name('notifications.read-all');
     Route::get('/notifikasi/jumlah', [NotificationController::class, 'count'])->name('notifications.count');
 
-    Route::post('/favorit/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
-    Route::post('/review', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
-    Route::post('/progres', [ReadingController::class, 'saveProgress'])->name('progress.save');
-    Route::post('/bookmark', [ReadingController::class, 'toggleBookmark'])->name('bookmarks.toggle');
-    Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
-    Route::post('/newsletter/toggle', [NewsletterController::class, 'toggle'])->name('newsletter.toggle');
+    Route::post('/favorit/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle')->middleware('throttle:30,1');
+    Route::post('/review', [ReviewController::class, 'store'])->name('reviews.store')->middleware('throttle:10,1');
+    Route::delete('/review/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('throttle:10,1');
+    Route::post('/progres', [ReadingController::class, 'saveProgress'])->name('progress.save')->middleware('throttle:60,1');
+    Route::post('/bookmark', [ReadingController::class, 'toggleBookmark'])->name('bookmarks.toggle')->middleware('throttle:30,1');
+    Route::post('/goals', [GoalController::class, 'store'])->name('goals.store')->middleware('throttle:10,1');
+    Route::post('/newsletter/toggle', [NewsletterController::class, 'toggle'])->name('newsletter.toggle')->middleware('throttle:10,1');
 });
 
 Route::post('/newsletter/berlangganan', [NewsletterController::class, 'subscribe'])
@@ -100,4 +120,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('newsletter', App\Http\Controllers\Admin\NewsletterController::class)
         ->parameters(['newsletter' => 'subscriber'])
         ->except(['create', 'store', 'edit']);
+
+    // Activity Logs
+    Route::get('/aktivitas', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/aktivitas/{log}', [ActivityLogController::class, 'show'])->name('activity-logs.show');
 });

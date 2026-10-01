@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════
-   BASE — reset, tipografi, aksesibilitas, utilitas
+   BASE — reset, tipografi editorial, aksesibilitas, utilitas
    ══════════════════════════════════════════════════════════════════ */
 
 *,
@@ -11,6 +11,7 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--nav-clearance) + var(--sp-4));
 }
 
 body {
@@ -20,10 +21,10 @@ body {
     line-height: 1.6;
     color: var(--color-ink);
     background-color: var(--color-bg);
-    background-image: var(--bg-ambient, none);
-    background-repeat: no-repeat;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 0.35s ease, color 0.35s ease;
+    transition:
+        background-color 0.35s ease,
+        color 0.35s ease;
 }
 
 img {
@@ -32,13 +33,13 @@ img {
 }
 
 a {
-    color: var(--color-primary);
+    color: inherit;
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
-    color: var(--color-amber);
+    color: var(--color-ink);
 }
 
 h1,
@@ -47,30 +48,88 @@ h3,
 h4,
 h5 {
     font-family: var(--font-display);
-    line-height: 1.2;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     margin: 0 0 0.5em;
     color: var(--color-ink);
-    font-weight: 700;
+    font-weight: 500;
+}
+
+h1 {
+    letter-spacing: -0.03em;
 }
 
 p {
     margin: 0 0 1rem;
 }
 
-/* ── Focus visible (aksesibilitas) ─────────────────────────────── */
+strong {
+    font-weight: 600;
+}
+
+/* ── Focus visible: cincin bara senja ────────────────────────────── */
 :focus-visible {
-    outline: 2px solid var(--color-amber);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
 }
 
-/* ── Seleksi teks ──────────────────────────────────────────────── */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ── Touch target minimum (44px) ───────────────────────────────── */
+button,
+a[href],
+input[type='checkbox'],
+input[type='radio'],
+select,
+[role='button'] {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* ── Cursor pointer untuk elemen interaktif ────────────────────── */
+button,
+a[href],
+[role='button'],
+input[type='submit'],
+input[type='button'] {
+    cursor: pointer;
+}
+
+/* ── Disabled state clarity ─────────────────────────────────────── */
+[disabled],
+[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ── Reduced motion: respect user preference ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ── Seleksi teks: tinta di atas kertas ────────────────────────── */
 ::selection {
-    background: var(--color-amber);
-    color: #22303c;
+    background: var(--color-ink);
+    color: var(--color-bg);
 }
 
-/* ── Scrollbar kustom tipis gradien ────────────────────────────── */
+/* ── Scrollbar tipis netral ────────────────────────────────────── */
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -81,8 +140,8 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--color-primary-light), var(--color-amber));
-    border-radius: 999px;
+    background: var(--color-border-strong);
+    border-radius: var(--radius-pill);
     border: 2px solid var(--color-bg);
 }
 
@@ -93,22 +152,28 @@ p {
 }
 
 .section {
-    padding-block: var(--sp-12);
+    padding-block: var(--sp-20);
 }
 
 .section--tight {
-    padding-block: var(--sp-8);
+    padding-block: var(--sp-12);
+}
+
+/* Section pertama tepat di bawah kartu search: potong padding-atasnya
+   supaya band kosong di bawah search bar tidak menyusut sendiri. */
+.section--lead {
+    padding-top: var(--sp-12);
 }
 
 /* ── Eyebrow & judul section ───────────────────────────────────── */
 .eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-amber);
-    margin: 0 0 var(--sp-2);
+    color: var(--color-muted);
+    margin: 0 0 var(--sp-3);
 }
 
 .section-head {
@@ -129,9 +194,14 @@ p {
 }
 
 .section-head__link {
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
+    color: var(--color-muted);
     white-space: nowrap;
+}
+
+.section-head__link:hover {
+    color: var(--color-ink);
 }
 
 /* ── Teks bantu ────────────────────────────────────────────────── */
@@ -148,7 +218,7 @@ p {
 }
 
 .text-amber {
-    color: var(--color-amber);
+    color: var(--color-warn-text);
 }
 
 .text-muted {
@@ -156,18 +226,24 @@ p {
 }
 
 .text-primary {
-    color: var(--color-primary);
+    color: var(--color-ink);
 }
 
 .small {
     font-size: 0.85rem;
 }
 
-/* ── Animasi reveal on scroll ──────────────────────────────────── */
+.text-center {
+    text-align: center;
+}
+
+/* ── Animasi reveal on scroll (fade + lift kecil) ──────────────── */
 .reveal {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(12px);
+    transition:
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: var(--d, 0ms);
 }
 
@@ -176,27 +252,74 @@ p {
     transform: translateY(0);
 }
 
-/* ── Tombol ikon emoji dalam lingkaran gradien ─────────────────── */
+/* ── Chip ikon: kotak pastel datar (pengganti lingkaran gradien) ── */
 .icon-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 48px;
     height: 48px;
-    border-radius: 50%;
-    font-size: 1.4rem;
+    border-radius: var(--radius-lg);
+    font-size: 1.2rem;
     flex-shrink: 0;
-    background: linear-gradient(145deg, var(--color-paper-soft), var(--color-amber-soft));
-    box-shadow: inset 0 0 0 1px var(--color-border);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-muted);
 }
 
 .icon-chip--sm {
     width: 36px;
     height: 36px;
-    font-size: 1.05rem;
+    font-size: 1rem;
 }
 
-/* ── Ikon Lucide (pengganti emoji) ────────────────────────────── */
+/* ── Bintang senja / bintang malam ──────────────────────────────
+   Dua lapis: ladang statis (--dusk-starfield) hanya hidup di mode
+   gelap, plus partikel JS yang berkedip di kedua mode. Mask
+   memudarkannya ke arah horizon supaya cuma langit atas yang
+   berbintang. Pada mode terang ladang = none, jadi tinggal
+   matahari senja. */
+.hero-stars {
+    position: absolute;
+    /* Sedikit melebar ke luar supaya parallax ±6px tidak membuka
+       tepi kosong di sisi kiri/atas — `.hero` yang memotongnya. */
+    inset: -14px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    background-image: var(--dusk-starfield, none);
+    background-size: 88px 88px;
+    background-repeat: repeat;
+    background-position: 0 0;
+    /* Lapis terjauh: magnitudo paling kecil, lag paling lambat */
+    transform: translate3d(var(--px-star-x, 0px), var(--px-star-y, 0px), 0);
+    -webkit-mask-image: linear-gradient(
+        180deg,
+        #000 0%,
+        #000 34%,
+        transparent 66%
+    );
+    mask-image: linear-gradient(180deg, #000 0%, #000 34%, transparent 66%);
+}
+
+.hero-stars i {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--hero-star);
+    animation: star-twinkle var(--t, 4s) ease-in-out var(--td, 0s) infinite;
+}
+
+@keyframes star-twinkle {
+    0%,
+    100% {
+        opacity: 0.18;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* ── Ikon Lucide ───────────────────────────────────────────────── */
 svg.lucide {
     width: 1em;
     height: 1em;
@@ -208,17 +331,17 @@ svg.lucide {
 h1 svg.lucide,
 h2 svg.lucide,
 h3 svg.lucide {
-    color: var(--color-amber);
+    color: var(--color-muted);
 }
 
 .icon-chip svg.lucide {
-    color: var(--color-amber);
+    color: var(--color-muted);
 }
 
 .streak-card__icon svg.lucide {
-    width: 2.6rem;
-    height: 2.6rem;
-    color: var(--color-amber);
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--color-warn-text);
 }
 
 .badge-item__emoji svg.lucide {
@@ -227,13 +350,13 @@ h3 svg.lucide {
 }
 
 .empty-state__icon svg.lucide {
-    width: 3rem;
-    height: 3rem;
+    width: 2.6rem;
+    height: 2.6rem;
 }
 
 .error-page__emoji svg.lucide {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 2.8rem;
+    height: 2.8rem;
 }
 
 .book-card__badge svg.lucide {
@@ -241,15 +364,15 @@ h3 svg.lucide {
     height: 0.9em;
 }
 
-/* ── Kredit aksen gradient ─────────────────────────────────────── */
+/* ── Teks gradien lama → netral ────────────────────────────────── */
 .gradient-text {
-    background: var(--gradient-sunset);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: var(--color-ink);
 }
 
-/* ── Reduced motion (aksesibilitas) ────────────────────────────── */
+/* ── Reduced motion (duplikat aman) ────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

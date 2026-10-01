@@ -54,7 +54,7 @@
                     <span class="text-muted small">({{ $book->rating_count }} ulasan)</span>
                 </div>
 
-                <div class="book-detail__actions">
+                <div class="book-detail__actions" role="group" aria-label="Aksi buku">
                     <a href="{{ route('reader', $book) }}" class="btn btn--primary btn--lg"><i data-lucide="book-open" aria-hidden="true"></i> {{ $progress ? 'Lanjut Baca' : 'Mulai Baca' }}</a>
 
                     @auth
@@ -64,6 +64,7 @@
                             data-url="{{ route('favorites.toggle') }}"
                             data-book-id="{{ $book->id }}"
                             aria-label="{{ $isFavorite ? 'Hapus dari favorit' : 'Tambah ke favorit' }}"
+                            aria-pressed="{{ $isFavorite ? 'true' : 'false' }}"
                         >
                             <span class="heart-icon"><i data-lucide="heart" aria-hidden="true"></i></span>
                             <span class="burst" aria-hidden="true">
@@ -77,6 +78,7 @@
                             data-book-id="{{ $book->id }}"
                             style="width:46px;height:46px;"
                             aria-label="{{ $bookmark ? 'Hapus dari Baca Nanti' : 'Tambahkan ke Baca Nanti' }}"
+                            aria-pressed="{{ $bookmark ? 'true' : 'false' }}"
                         >
                             <i data-lucide="bookmark" aria-hidden="true"></i>
                         </button>
@@ -84,10 +86,10 @@
                 </div>
 
                 @if ($progress)
-                    <div class="progress" data-percent="{{ $progress->progress_percent }}" style="margin-bottom:var(--sp-4);">
+                    <div class="progress" data-percent="{{ $progress->progress_percent }}" style="margin-bottom:var(--sp-4);" role="progressbar" aria-label="Progres membaca" aria-valuenow="{{ $progress->progress_percent }}" aria-valuemin="0" aria-valuemax="100">
                         <div class="progress__bar {{ $progress->progress_percent >= 100 ? 'is-done' : '' }}"></div>
                     </div>
-                    <p class="small text-muted">
+                    <p class="small text-muted" aria-live="polite">
                         @if ($progress->progress_percent >= 100)
                             <i data-lucide="circle-check" aria-hidden="true"></i> Kamu sudah menamatkan buku ini
                         @else

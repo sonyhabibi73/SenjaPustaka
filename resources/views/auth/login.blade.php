@@ -18,9 +18,10 @@
         <label for="password">Kata Sandi</label>
         <input type="password" id="password" name="password" class="input" required autocomplete="current-password">
     </div>
-    <div class="field" style="display:flex;align-items:center;gap:8px;">
-        <input type="checkbox" id="remember" name="remember" style="width:16px;height:16px;accent-color:var(--color-amber);">
-        <label for="remember" style="margin:0;font-size:0.88rem;">Ingat saya</label>
+    <div class="field field--row">
+        <input type="checkbox" id="remember" name="remember">
+        <label for="remember">Ingat saya</label>
+        <a href="{{ route('password.request') }}" class="field__link">Lupa kata sandi?</a>
     </div>
     <button type="submit" class="btn btn--primary btn--lg btn--block"><i data-lucide="log-in" aria-hidden="true"></i> Masuk</button>
 </form>

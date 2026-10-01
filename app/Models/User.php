@@ -36,11 +36,6 @@ use Illuminate\Support\Carbon;
     'password',
     'avatar',
     'bio',
-    'is_admin',
-    'points',
-    'streak_days',
-    'longest_streak',
-    'last_read_at',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

@@ -1,76 +1,68 @@
 /* ══════════════════════════════════════════════════════════════════
-   HOME — hero "Jendela Senja", rak buku 3D, search glass, section
+   HOME — hero editorial, rak buku datar, search card, bento fitur
    ══════════════════════════════════════════════════════════════════ */
 
-/* ── HERO ──────────────────────────────────────────────────────── */
+/* ── HERO: langit senja. Satu-satunya gradien di CSS karena yang
+      digambarkan memang langit — kartu, tombol, panel tetap datar. ─ */
 .hero {
     position: relative;
     overflow: hidden;
-    background: var(--gradient-hero);
-    color: var(--hero-fg);
-    min-height: 620px;
+    background: linear-gradient(
+        180deg,
+        var(--dusk-1) 0%,
+        var(--dusk-2) 52%,
+        var(--dusk-3) 82%,
+        var(--dusk-4) 100%
+    );
+    color: var(--color-ink);
+    min-height: auto;
     display: flex;
     align-items: center;
-    padding-block: var(--sp-16) var(--sp-24);
+    padding-block: var(--sp-24) var(--hero-pad-bottom);
 }
 
-/* grain */
+/* Tanah: permukaan tempat rak & kartu search berpijak. Datar — bukan
+   gradien, jadi ramp yang disahkan tetap cuma satu. Garis horizon
+   (::after, z-index lebih tinggi) menutupnya sebagai batas ke halaman. */
 .hero::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--hero-ground);
+    background: var(--dusk-ground);
+    z-index: 0;
 }
 
-/* bintang berkedip (CSS murni) */
-.hero-stars {
+/* Garis horizon: satu batang bara tipis di dasar langit senja */
+.hero::after {
+    content: '';
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--color-accent);
+    opacity: 0.9;
     z-index: 1;
-    pointer-events: none;
-}
-
-.hero-stars i {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: var(--hero-star);
-    opacity: 0;
-    animation: twinkle var(--t, 4s) ease-in-out infinite;
-    animation-delay: var(--td, 0s);
-    box-shadow: 0 0 6px var(--hero-star);
-}
-
-@keyframes twinkle {
-    0%,
-    100% {
-        opacity: 0;
-        transform: scale(0.6);
-    }
-    50% {
-        opacity: 0.9;
-        transform: scale(1);
-    }
 }
 
 .hero__grid {
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: var(--sp-10);
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: var(--sp-16);
     align-items: center;
 }
 
 .hero__eyebrow {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.26em;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--hero-eyebrow);
+    color: var(--color-accent);
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -79,33 +71,30 @@
 
 .hero__eyebrow::before {
     content: '';
-    width: 32px;
+    width: 28px;
     height: 1px;
-    background: var(--color-amber);
+    background: var(--color-accent);
 }
 
 .hero__title {
-    color: var(--hero-fg);
-    font-size: clamp(2.6rem, 6vw, 4.5rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    margin: 0 0 var(--sp-4);
-    text-shadow: var(--hero-title-shadow);
+    color: var(--color-ink);
+    font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 0 0 var(--sp-5);
 }
 
 .hero__title em {
     font-style: italic;
-    background: var(--hero-title-em);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-accent);
 }
 
 .hero__sub {
     color: var(--hero-fg-soft);
-    font-size: 1.08rem;
-    max-width: 520px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 480px;
     margin: 0 0 var(--sp-8);
 }
 
@@ -113,57 +102,89 @@
     display: flex;
     gap: var(--sp-3);
     flex-wrap: wrap;
-    margin-bottom: var(--sp-10);
+    margin-bottom: var(--sp-12);
 }
 
 .hero__ctas .btn--ghost {
-    border-color: var(--hero-ghost-border);
-    color: var(--hero-fg);
+    border-color: var(--color-border);
+    color: var(--color-ink);
+    background: var(--color-surface);
 }
 
 .hero__ctas .btn--ghost:hover {
-    border-color: var(--hero-ghost-hover);
-    color: var(--hero-ghost-hover);
+    border-color: var(--color-border-strong);
+    color: var(--color-ink);
 }
 
 .hero__stats {
     display: flex;
-    gap: var(--sp-8);
+    gap: var(--sp-10);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--color-border);
+    max-width: 480px;
 }
 
 .hero__stat .mono {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--hero-fg);
+    font-size: 1.45rem;
+    font-weight: 500;
+    color: var(--color-ink);
     display: block;
+    margin-bottom: 2px;
 }
 
 .hero__stat span:last-child {
     font-size: 0.78rem;
     color: var(--hero-fg-soft);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
 }
 
-/* ── Rak buku 3D ───────────────────────────────────────────────── */
+/* ── Rak buku: siluet di atas bidai, matahari senja di belakang ── */
 .bookshelf {
-    perspective: 1200px;
+    position: relative;
     user-select: none;
 }
 
+/* Matahari hampir terbenam — sengaja diikat ke rak, bukan ke viewport,
+   supaya posisinya selalu tepat di balik buku-buku di semua lebar layar.
+   Mode terang: cakram bara polos. Mode gelap: --dusk-sun jadi bulan
+   pucat dan --dusk-sun-tex menggambar kawahnya di atas. */
+.bookshelf::before {
+    content: '';
+    position: absolute;
+    right: -24px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background-color: var(--dusk-sun);
+    background-image: var(--dusk-sun-tex, none);
+    box-shadow: 0 0 0 26px var(--dusk-halo);
+    z-index: -1;
+    pointer-events: none;
+    /* Cakram ditahan tepat di garis atas tanah (dasar konten dikurangi
+       sisa padding-bawah), jadi ia tidak pernah tenggelam ke dalam
+       band tanah — di mode terang keduanya warna yang terlalu mirip. */
+    bottom: calc(var(--hero-ground) - var(--hero-pad-bottom));
+    /* Parallax — lapis menengah (±20px + sink saat scroll).
+       Dirender di atas transform milik `.bookshelf` (js-tilt), jadi
+       geraknya mandiri, bukan ikut rotate 3D rak. */
+    transform: translate3d(
+        var(--px-sun-x, 0px),
+        calc(var(--px-sun-y, 0px) + var(--px-sun-sink, 0px)),
+        0
+    );
+}
+
+/* Tanpa kotak: buku berdiri bebas di atas bidai dan matahari menembus
+   sela-selanya. Inilah yang menghilangkan kesan "tabel kaku". */
 .bookshelf__row {
+    position: relative;
     display: flex;
     align-items: flex-end;
-    gap: 8px;
+    gap: 7px;
     height: 380px;
-    padding: var(--sp-6) var(--sp-5) 0;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18));
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
-    transform: rotateY(-8deg) rotateX(4deg);
-    transform-style: preserve-3d;
+    padding: var(--sp-6) var(--sp-4) 0;
+    background: none;
+    border: 0;
 }
 
 .book-spine {
@@ -171,24 +192,24 @@
     flex: 0 0 auto;
     width: var(--w, 46px);
     height: var(--h, 260px);
-    border-radius: 6px 9px 9px 6px;
-    /* Warna spine mengikuti tema via --spine-N (variabel di variables.css).
-       Variasi per buku dipilih lewat data-spine agar rak tetap variatif
-       tapi tidak tabrakan dengan tema — dulu pakai cover_color dari DB
-       (biru malam) sehingga aneh di mode terang. */
-    background: var(--spine-grad, var(--gradient-sunset));
-    box-shadow: inset -5px 0 0 rgba(0, 0, 0, 0.18), inset 2px 0 0 rgba(255, 255, 255, 0.18),
-        0 10px 20px rgba(0, 0, 0, 0.3);
-    transform: rotateY(0deg);
-    transform-style: preserve-3d;
-    transition: transform 0.25s ease, filter 0.25s ease;
+    border-radius: 2px 4px 4px 2px;
+    /* Warna spine mengikuti tema via --spine-N (variabel di variables.css). */
+    background: var(--spine-grad, var(--color-surface-2));
+    /* Silindris: sisi kiri kena cahaya senja, sisi kanan bayang. */
+    box-shadow:
+        inset 3px 0 0 rgba(255, 255, 255, 0.13),
+        inset -4px 0 0 rgba(0, 0, 0, 0.2),
+        0 8px 16px rgba(74, 48, 22, 0.18);
+    transform: rotate(var(--rot, 0deg));
+    transform-origin: bottom center;
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
     cursor: pointer;
-    animation: book-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation: book-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     animation-delay: var(--bd, 0s);
 }
 
-/* Variasi warna spine — data-spine memilih salah satu dari 6 palet
-   tema (--spine-1 … --spine-6, didefinisikan per tema di variables.css). */
 .book-spine[data-spine='1'] {
     --spine-grad: var(--spine-1);
 }
@@ -214,80 +235,95 @@
 }
 
 .book-spine:hover {
-    transform: translateY(-14px) rotateY(-14deg);
-    filter: brightness(1.12);
+    transform: rotate(var(--rot, 0deg)) translateY(-14px);
+    filter: brightness(1.1);
     z-index: 3;
 }
 
-.book-spine::before {
-    content: attr(data-title);
-    position: absolute;
-    inset: 12px auto 12px 10px;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.92);
-    /* shadow dipertebal agar judul tetap kontras di palet light (oranye
-       lebih terang) dan dark (biru malam) */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65), 0 0 6px rgba(0, 0, 0, 0.4);
-}
-
+/* Pita foil di kepala punggung buku */
 .book-spine::after {
     content: '';
     position: absolute;
-    top: 10px;
-    left: 8px;
-    bottom: 10px;
-    width: 3px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.25);
+    left: 5px;
+    right: 5px;
+    top: 16px;
+    height: 5px;
+    background: var(--spine-foil);
+    pointer-events: none;
+}
+
+/* Judul dicetak foil krem — bukan tinta gelap. Tinta gelap di atas
+   punggung gelap = 1.0–1.4:1, praktis hilang di mode terang. */
+.book-spine::before {
+    content: attr(data-title);
+    position: absolute;
+    top: 32px;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-display);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--spine-text);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 @keyframes book-in {
     from {
         opacity: 0;
-        transform: translateY(40px) scale(0.9);
+        transform: rotate(var(--rot, 0deg)) translateY(20px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: rotate(var(--rot, 0deg)) translateY(0);
     }
 }
 
+/* Bidai kayu hangat dengan tepi lebih gelap */
 .bookshelf__base {
-    height: 18px;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
-    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.3);
-    transform: rotateY(-8deg) rotateX(4deg);
+    height: 14px;
+    background: var(--shelf-plank);
+    border: 0;
+    border-radius: 3px;
+    /* Bayangan jatuh ke tanah di bawahnya — ini yang bikin rak
+       berpijak, bukan melayang. Hangat & datar, bukan glow. */
+    box-shadow:
+        0 4px 0 -1px var(--shelf-plank-edge),
+        0 26px 30px -20px var(--dusk-ground-shade);
 }
 
 /* scroll indicator */
 .scroll-hint {
     position: absolute;
     left: 50%;
-    bottom: var(--sp-6);
+    bottom: var(--sp-4);
     transform: translateX(-50%);
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    color: var(--hero-scroll);
-    font-size: 0.72rem;
+    /* Berdiri di atas tanah, bukan di atas langit — jadi warnanya
+       tinta penuh (7.7:1 di terang, 14.2:1 di gelap), bukan soft. */
+    color: var(--color-ink);
+    font-size: 0.68rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 }
 
 .scroll-hint__mouse {
-    width: 22px;
-    height: 36px;
-    border: 2px solid var(--hero-scroll-border);
-    border-radius: 12px;
+    width: 20px;
+    height: 32px;
+    border: 1px solid currentColor;
+    border-radius: 10px;
     position: relative;
+    opacity: 0.7;
 }
 
 .scroll-hint__mouse::after {
@@ -295,11 +331,11 @@
     position: absolute;
     top: 6px;
     left: 50%;
-    width: 3px;
-    height: 7px;
-    margin-left: -1.5px;
+    width: 2px;
+    height: 6px;
+    margin-left: -1px;
     border-radius: 2px;
-    background: var(--hero-scroll-dot);
+    background: var(--color-accent);
     animation: scroll-dot 1.6s ease-in-out infinite;
 }
 
@@ -309,7 +345,7 @@
         opacity: 1;
     }
     70% {
-        transform: translateY(12px);
+        transform: translateY(10px);
         opacity: 0;
     }
     100% {
@@ -317,14 +353,13 @@
     }
 }
 
-/* ── Search card floating ──────────────────────────────────────── */
+/* ── Search card: panel putih sederhana ────────────────────────── */
+/* Tepat di bawah garis horizon — tepi atasnya menyentuh batas tanah,
+   bukan menabrak label "Gulir" seperti sebelumnya. */
 .search-card {
     position: relative;
     z-index: 5;
-    margin-top: calc(var(--sp-6) * -1);
-    background: color-mix(in srgb, var(--color-surface) 82%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     padding: var(--sp-3);
@@ -333,14 +368,62 @@
 
 .search-form {
     display: flex;
-    gap: var(--sp-3);
+    gap: var(--sp-2);
+}
+
+/* ── Chip kategori di dalam kartu search (B) ─────────────────────
+   Fungsi, bukan hiasan: mengisi band kosong di bawah hero dengan
+   navigasi nyata. Bahasa visualnya sama dengan .eyebrow — mono
+   uppercase bergaris 1px, bukan pil bergradasi. */
+.search-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-3);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--color-border);
+}
+
+.search-card__tags-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-right: var(--sp-1);
+}
+
+.search-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.search-tag:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
 }
 
 .search-form .input {
     flex: 1;
-    padding: 0.9rem 1.2rem;
-    font-size: 1rem;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.98rem;
     background: var(--color-surface);
+    border-color: transparent;
+}
+
+.search-form .input:focus {
+    border-color: var(--color-border-strong);
 }
 
 .search-suggest {
@@ -350,11 +433,11 @@
     right: var(--sp-3);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-hover);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     display: none;
     z-index: 10;
+    box-shadow: var(--shadow-hover);
 }
 
 .search-suggest.is-open {
@@ -372,19 +455,21 @@
 }
 
 .search-suggest__item:hover {
-    background: var(--color-paper-soft);
+    background: var(--color-surface-2);
 }
 
 .search-suggest__swatch {
     width: 28px;
     height: 38px;
-    border-radius: 6px;
+    border-radius: 4px;
     flex-shrink: 0;
+    border: 1px solid var(--color-border);
 }
 
 .search-suggest__item strong {
     display: block;
     font-size: 0.88rem;
+    font-weight: 500;
 }
 
 .search-suggest__item span {
@@ -392,11 +477,11 @@
     color: var(--color-muted);
 }
 
-/* ── Feature cards bernomor ────────────────────────────────────── */
+/* ── Bento fitur: kartu 1px border, nomor mono ─────────────────── */
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--sp-6);
+    gap: var(--sp-4);
 }
 
 .feature-card {
@@ -405,128 +490,97 @@
     border-radius: var(--radius-lg);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    overflow: hidden;
-}
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 2px;
-    background: var(--gradient-sunset);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+    transition: border-color 0.25s ease;
 }
 
 .feature-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-hover);
-}
-
-.feature-card:hover::before {
-    opacity: 1;
+    border-color: var(--color-border-strong);
 }
 
 .feature-card__num {
     font-family: var(--font-mono);
-    font-size: 3.4rem;
-    font-weight: 700;
-    line-height: 1;
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-amber);
-    opacity: 0.75;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-faint);
+    margin-bottom: var(--sp-6);
+    display: block;
+}
+
+.feature-card__num::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--color-border-strong);
     margin-bottom: var(--sp-4);
 }
 
 .feature-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin-bottom: var(--sp-2);
 }
 
 .feature-card p {
     color: var(--color-muted);
     font-size: 0.92rem;
+    line-height: 1.7;
     margin: 0;
 }
 
-/* ── CTA banner ────────────────────────────────────────────────── */
+/* ── CTA banner: panel tinta pekat ─────────────────────────────── */
 .cta-banner {
-    position: relative;
-    overflow: hidden;
     border-radius: var(--radius-xl);
-    background: var(--gradient-hero);
-    color: var(--hero-fg);
+    background: var(--color-ink);
+    color: var(--color-bg);
     text-align: center;
-    padding: var(--sp-16) var(--sp-8);
-}
-
-.cta-banner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-    pointer-events: none;
-}
-
-.cta-banner::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -80px;
-    transform: translateX(-50%);
-    width: 500px;
-    height: 200px;
-    background: var(--gradient-glow);
-    filter: blur(30px);
-    pointer-events: none;
+    padding: var(--sp-20) var(--sp-8);
 }
 
 .cta-banner h2 {
-    color: var(--hero-fg);
+    color: var(--color-bg);
     font-size: clamp(1.8rem, 4vw, 2.6rem);
+    letter-spacing: -0.03em;
     margin-bottom: var(--sp-3);
-    position: relative;
-    z-index: 1;
+    max-width: 640px;
+    margin-inline: auto;
 }
 
 .cta-banner p {
-    color: var(--hero-fg-soft);
+    color: color-mix(in srgb, var(--color-bg) 70%, transparent);
     max-width: 480px;
     margin: 0 auto var(--sp-6);
-    position: relative;
-    z-index: 1;
 }
 
-.cta-banner .btn {
-    position: relative;
-    z-index: 1;
+.cta-banner .btn--light {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    border-color: transparent;
+}
+
+.cta-banner .btn--light:hover {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
 }
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 860px) {
     .hero {
-        padding-block: var(--sp-12) var(--sp-16);
-        min-height: auto;
+        /* Hanya atas yang dikecilkan — padding-bawah harus tetap
+           var(--hero-pad-bottom) supaya tinggi tanah & posisi cakram
+           tetap sinkron di semua lebar. */
+        padding-block: var(--sp-16) var(--hero-pad-bottom);
     }
 
     .hero__grid {
         grid-template-columns: 1fr;
-        gap: var(--sp-8);
+        gap: var(--sp-10);
     }
 
     .bookshelf__row {
         height: 320px;
     }
 
-    /* spine sedikit dikecilkan: tinggi inline (max 329px) hampir
-       menyamai tinggi rak 320px di tablet */
     .bookshelf__row .book-spine {
         height: calc(var(--h, 260px) * 0.9);
     }
@@ -554,7 +608,6 @@
         font-size: 1rem;
     }
 
-    /* rak buku: batasi jumlah buku agar tidak keluar layar */
     .bookshelf__row {
         gap: 4px;
         height: 280px;
@@ -565,9 +618,6 @@
         display: none;
     }
 
-    /* spine diskalakan proporsional mengikuti rak 280px. Ukuran inline
-       --w/--h dibuat untuk rak desktop 380px — tanpa skala, spine
-       tertinggi (329px) nembus keluar atas rak dan keliatan kegedean. */
     .bookshelf__row .book-spine {
         width: calc(var(--w, 46px) * 0.75);
         height: calc(var(--h, 260px) * 0.75);

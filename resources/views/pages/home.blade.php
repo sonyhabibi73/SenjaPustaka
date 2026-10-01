@@ -57,6 +57,7 @@
                                 --w: {{ 38 + (($index * 7) % 22) }}px;
                                 --h: {{ 200 + (($index * 23) % 130) }}px;
                                 --bd: {{ $index * 0.07 }}s;
+                                --rot: {{ $index === 7 ? '-5' : round((($index % 4) - 1.5) * 0.8, 2) }}deg;
                             "
                         ></div>
                     @endforeach
@@ -85,6 +86,17 @@
             >
             <button type="submit" class="btn btn--primary"><i data-lucide="search" aria-hidden="true"></i> Cari</button>
         </form>
+
+        {{-- Chip kategori: navigasi langsung, juga pengisi band kosong
+             di bawah hero. $categories (6 teratas) sudah dikirim
+             HomeController — tidak ada query tambahan. --}}
+        <div class="search-card__tags">
+            <span class="search-card__tags-label">Kategori</span>
+            @foreach ($categories as $category)
+                <a class="search-tag" href="{{ route('categories.show', $category) }}">{{ $category->name }}</a>
+            @endforeach
+        </div>
+
         <div class="search-suggest" aria-live="polite"></div>
     </div>
 </div>
@@ -133,7 +145,7 @@
 @endif
 
 {{-- ══ SEDANG TRENDING ══ --}}
-<section class="section">
+<section class="section{{ $continue->isEmpty() ? ' section--lead' : '' }}">
     <div class="container">
         <div class="section-head reveal">
             <div>

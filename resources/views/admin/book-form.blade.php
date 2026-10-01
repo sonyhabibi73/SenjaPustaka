@@ -78,7 +78,7 @@
             </div>
             <div class="field">
                 <label for="cover_color">Warna Cover (hex) — fallback</label>
-                <input type="color" id="cover_color" name="cover_color" class="input" value="{{ old('cover_color', $book?->cover_color ?? '#274A66') }}" style="padding:4px;height:46px;">
+                <input type="color" id="cover_color" name="cover_color" class="input" value="{{ old('cover_color', $book?->cover_color ?? '#B4491A') }}" style="padding:4px;height:46px;">
             </div>
             <div class="field">
                 <label for="file">Berkas PDF / CBZ ({{ $book ? 'kosongkan jika tidak diganti' : 'opsional' }} — maks 200MB)</label>
