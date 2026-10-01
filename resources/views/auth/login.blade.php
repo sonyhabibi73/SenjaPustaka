@@ -5,7 +5,7 @@
 
 @section('form')
 
-<h1>Selamat datang kembali 👋</h1>
+<h1>Selamat datang kembali</h1>
 <p class="auth-form__sub">Masuk untuk melanjutkan cerita terakhirmu.</p>
 
 <form method="POST" action="{{ route('login') }}">

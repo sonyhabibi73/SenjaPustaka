@@ -40,3 +40,23 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Mirror skill milik tool agent (bukan bagian proyek)
+/.agents
+/.augment
+/.claude
+/.codebuddy
+/.codewhale
+/.continue
+/.cursor
+/.factory
+/.gemini
+/.kilocode
+/.kiro
+/.opencode
+/.qoder
+/.roo
+/.trae
+/.warp
+/.windsurf
+/.github/prompts

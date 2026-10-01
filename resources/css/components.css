@@ -261,6 +261,16 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    /* Judul yang hanya satu baris tetap menyediakan ruang dua baris
+       (2,8em = 2 x line-height), supaya baris penulis di kartu yang
+       bersebelahan sejajar. Tanpa ini dasar penulis naik-turun 21px. */
+    min-height: 2.8em;
+}
+
+/* Kartu baris (Lanjut Baca) tampil satu per baris, jadi tidak perlu tinggi
+   paksaan -- malah hanya menambah jarak kosong. */
+.book-card--row .book-card__title {
+    min-height: 0;
 }
 
 .book-card__author {
@@ -716,6 +726,12 @@
     justify-content: center;
     flex-wrap: wrap;
     margin-top: var(--sp-10);
+    /* <ul> bawaan peramban menaruh bullet 5px dan padding-left 40px.
+       Tanpa reset ini bullet menimpa tombol "←" dan angka halaman.
+       Sengaja hanya untuk .pagination: <ul> polos di halaman Syarat &
+       Ketentuan tetap butuh bullet bawaan. */
+    list-style: none;
+    padding: 0;
 }
 
 .pagination .page-item a,

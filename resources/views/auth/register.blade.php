@@ -5,7 +5,7 @@
 
 @section('form')
 
-<h1>Mulai petualanganmu ✨</h1>
+<h1>Mulai petualanganmu</h1>
 <p class="auth-form__sub">Gratis selamanya. Buat akun dan langsung temukan buku pertamamu.</p>
 
 <form method="POST" action="{{ route('register') }}">

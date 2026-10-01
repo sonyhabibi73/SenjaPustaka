@@ -31,12 +31,16 @@
                     <option value="{{ $category->slug }}" @selected($filters['kategori'] === $category->slug)>{{ $category->name }}</option>
                 @endforeach
             </select>
-            <select name="series" form="filter-form" class="select" aria-label="Filter series">
-                <option value="">Semua Series</option>
-                @foreach ($series as $s)
-                    <option value="{{ $s->slug }}" @selected($filters['series'] === $s->slug)>{{ $s->name }}</option>
-                @endforeach
-            </select>
+            {{-- Filter series hanya tampil kalau datanya ada. Saat seri masih
+                 kosong, kontrol ini cuma menampilkan satu opsi yang mati. --}}
+            @if (count($series) > 0)
+                <select name="series" form="filter-form" class="select" aria-label="Filter series">
+                    <option value="">Semua Series</option>
+                    @foreach ($series as $s)
+                        <option value="{{ $s->slug }}" @selected($filters['series'] === $s->slug)>{{ $s->name }}</option>
+                    @endforeach
+                </select>
+            @endif
             <select name="sort" form="filter-form" class="select" aria-label="Urutkan">
                 <option value="terbaru" @selected($filters['sort'] === 'terbaru')>Terbaru</option>
                 <option value="populer" @selected($filters['sort'] === 'populer')>Paling Populer</option>

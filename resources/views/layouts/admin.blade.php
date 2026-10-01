@@ -54,7 +54,7 @@
 
         <main class="admin-main">
             @if (session('success'))
-                <div class="alert alert--success">✨ {{ session('success') }}</div>
+                <div class="alert alert--success"><i data-lucide="circle-check" aria-hidden="true"></i> {{ session('success') }}</div>
             @endif
             @if (session('error'))
                 <div class="alert alert--error"><i data-lucide="triangle-alert" aria-hidden="true"></i> {{ session('error') }}</div>

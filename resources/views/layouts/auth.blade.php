@@ -41,7 +41,7 @@
         <div class="auth-form-wrap">
             <div class="auth-form">
                 @if (session('success'))
-                    <div class="alert alert--success">✨ {{ session('success') }}</div>
+                    <div class="alert alert--success"><i data-lucide="circle-check" aria-hidden="true"></i> {{ session('success') }}</div>
                 @endif
                 @if (isset($errors) && $errors->any())
                     <div class="alert alert--error"><i data-lucide="triangle-alert" aria-hidden="true"></i> {{ $errors->first() }}</div>
