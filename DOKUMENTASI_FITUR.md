@@ -29,20 +29,20 @@ Browser request
 
 ### 1. Visitor Features (No Login)
 
-| Feature                                       | What it does                                                                                                                                  |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Homepage**                                  | Hero + platform stats, "Continue Reading" (if logged in), trending books (by view count), popular categories, newest ebooks, random bookshelf |
-| **Collection / Catalog** (`/koleksi`)         | Browse books with search text, category filter, series filter, sorting (newest / most popular / rating / title), paginated 12 per page        |
-| **Book Detail** (`/buku/{slug}`)              | Cover, metadata, rating, view counter (+1 per visit), related books, review list, favorite & read buttons                                     |
-| **Search** (`/cari`)                          | Full search results page + live autocomplete (debounced 220ms, min 2 chars, max 6 results)                                                    |
-| **Rankings** (`/peringkat`)                   | Top 20 books by average rating                                                                                                                |
-| **Reader Leaderboard** (`/peringkat-pembaca`) | Top 20 users by points                                                                                                                        |
-| **Categories & Authors**                      | Index pages and detail pages for each category and author                                                                                     |
-| **Static Pages**                              | About, Privacy Policy, Terms & Conditions                                                                                                     |
-| **Contact Form**                              | Sends the message by email (rate-limited 5 per 10 min)                                                                                        |
-| **Newsletter Signup**                         | Subscribe with email from the footer                                                                                                          |
-| **Dark/Light Theme**                          | Saved in localStorage, follows system preference by default                                                                                   |
-| **Visual Effects**                            | 3D card tilt, scroll reveal animations, count-up stats, animated progress bars, blinking stars, auto-hiding alerts                            |
+| Feature                                       | What it does                                                                                                                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Homepage**                                  | Hero + platform stats, "Continue Reading" (if logged in), trending books (by view count), popular categories, newest ebooks, random bookshelf                                   |
+| **Collection / Catalog** (`/koleksi`)         | Browse books with search text, category filter, series filter (hidden while the series table is empty), sorting (newest / most popular / rating / title), paginated 12 per page |
+| **Book Detail** (`/buku/{slug}`)              | Cover, metadata, rating, view counter (+1 per visit), related books, review list, favorite & read buttons                                                                       |
+| **Search** (`/cari`)                          | Full search results page + live autocomplete (debounced 220ms, min 2 chars, max 6 results)                                                                                      |
+| **Rankings** (`/peringkat`)                   | Top 20 books by average rating                                                                                                                                                  |
+| **Reader Leaderboard** (`/peringkat-pembaca`) | Top 20 users by points                                                                                                                                                          |
+| **Categories & Authors**                      | Index pages and detail pages for each category and author                                                                                                                       |
+| **Static Pages**                              | About, Privacy Policy, Terms & Conditions                                                                                                                                       |
+| **Contact Form**                              | Sends the message by email (rate-limited 5 per 10 min)                                                                                                                          |
+| **Newsletter Signup**                         | Subscribe with email from the footer                                                                                                                                            |
+| **Dark/Light Theme**                          | Saved in localStorage, follows system preference by default                                                                                                                     |
+| **Visual Effects**                            | 3D card tilt, scroll reveal animations, count-up stats, animated progress bars, blinking stars, auto-hiding alerts                                                              |
 | **PWA / Offline**                             | Service worker caches core pages; registered in production only **and never on `localhost` / `127.0.0.1` / `[::1]`** (a local build would otherwise be pinned to its own cache) |
 
 ### 2. Registered User Features
@@ -186,22 +186,22 @@ Click stars on book page → POST /review {book_id, rating, comment}
 
 Seed data is no longer fictional. `DatabaseSeeder` runs: badges → users → `BookCatalogSeeder` → `EngagementSeeder` → newsletter.
 
-| #   | Title                                             | Author            | Pages | Year | Publisher          | Categories                          |
-| --- | ------------------------------------------------- | ----------------- | ----- | ---- | ------------------ | ----------------------------------- |
-| 1   | 3726 MDPL                                         | Nurwina Sari      | 153   | 2024 | Gramedia Pustaka   | Fiksi, Romantis, Novel              |
-| 2   | Hujan                                             | Tere Liye         | 315   | 2016 | Gramedia Pustaka   | Fiksi, Novel                        |
-| 3   | Laut Bercerita                                    | Leila S. Chudori  | 394   | 2017 | Gramedia Pustaka   | Romantis, Misteri, Sejarah, Novel   |
-| 4   | Cantik Itu Luka                                   | Eka Kurniawan     | 490   | 2002 | Gramedia Pustaka   | Fiksi, Sejarah, Novel               |
-| 5   | Tentang Kamu                                      | Tere Liye         | 648   | 2016 | Republika          | Fiksi, Romantis, Misteri, Novel     |
-| 6   | Rindu                                             | Tere Liye         | 669   | 2014 | —                  | Fiksi, Romantis, Novel              |
-| 7   | Janji                                             | Tere Liye         | 927   | 2021 | —                  | Misteri, Novel                      |
-| 8   | Kudasai                                           | Brian Khrisna     | 454   | 2019 | Gramedia Pustaka   | Fiksi, Romantis, Novel              |
-| 9   | Bandung Menjelang Pagi                            | Brian Khrisna     | 308   | 2024 | Gramedia Pustaka   | Fiksi, Romantis, Novel              |
-| 10  | Sisi Tergelap Surga                               | Brian Khrisna     | 308   | 2023 | Gramedia Pustaka   | Fiksi, Novel                        |
-| 11  | Seporsi Mie Ayam Sebelum Mati                     | Brian Khrisna     | 217   | 2025 | Gramedia Pustaka   | Fiksi, Self-Help, Novel             |
-| 12  | Parable                                           | Brian Khrisna     | 692   | 2021 | mediakita          | Fiksi, Misteri, Novel               |
-| 13  | Malioboro at Midnight                             | Brian Khrisna     | 430   | —    | bukune             | Fiksi, Misteri, Novel               |
-| 14  | Toumei na Yoru ni Kakeru Kimi to, Me ni Mienai Koi wo Shita. | Shima Nanigashi | 99 | 2024 | —           | Komik, Romantis                     |
+| #   | Title                                                        | Author           | Pages | Year | Publisher        | Categories                        |
+| --- | ------------------------------------------------------------ | ---------------- | ----- | ---- | ---------------- | --------------------------------- |
+| 1   | 3726 MDPL                                                    | Nurwina Sari     | 153   | 2024 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
+| 2   | Hujan                                                        | Tere Liye        | 315   | 2016 | Gramedia Pustaka | Fiksi, Novel                      |
+| 3   | Laut Bercerita                                               | Leila S. Chudori | 394   | 2017 | Gramedia Pustaka | Romantis, Misteri, Sejarah, Novel |
+| 4   | Cantik Itu Luka                                              | Eka Kurniawan    | 490   | 2002 | Gramedia Pustaka | Fiksi, Sejarah, Novel             |
+| 5   | Tentang Kamu                                                 | Tere Liye        | 648   | 2016 | Republika        | Fiksi, Romantis, Misteri, Novel   |
+| 6   | Rindu                                                        | Tere Liye        | 669   | 2014 | —                | Fiksi, Romantis, Novel            |
+| 7   | Janji                                                        | Tere Liye        | 927   | 2021 | —                | Misteri, Novel                    |
+| 8   | Kudasai                                                      | Brian Khrisna    | 454   | 2019 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
+| 9   | Bandung Menjelang Pagi                                       | Brian Khrisna    | 308   | 2024 | Gramedia Pustaka | Fiksi, Romantis, Novel            |
+| 10  | Sisi Tergelap Surga                                          | Brian Khrisna    | 308   | 2023 | Gramedia Pustaka | Fiksi, Novel                      |
+| 11  | Seporsi Mie Ayam Sebelum Mati                                | Brian Khrisna    | 217   | 2025 | Gramedia Pustaka | Fiksi, Self-Help, Novel           |
+| 12  | Parable                                                      | Brian Khrisna    | 692   | 2021 | mediakita        | Fiksi, Misteri, Novel             |
+| 13  | Malioboro at Midnight                                        | Brian Khrisna    | 430   | —    | bukune           | Fiksi, Misteri, Novel             |
+| 14  | Toumei na Yoru ni Kakeru Kimi to, Me ni Mienai Koi wo Shita. | Shima Nanigashi  | 99    | 2024 | —                | Komik, Romantis                   |
 
 - **13 categories** — the `Novel` category, dropped in an earlier cleanup, is back; the other 12 are unchanged.
 - **6 authors** — exactly the authors who wrote these books; the 23 placeholder authors are gone from `/penulis`.
@@ -210,13 +210,13 @@ Seed data is no longer fictional. `DatabaseSeeder` runs: badges → users → `B
 
 ### Where the data came from
 
-| Field            | Source                                                                                             |
-| ---------------- | -------------------------------------------------------------------------------------------------- |
-| 8 descriptions   | Restored **verbatim** from `database/database.sqlite.backup-20260812-011300`                        |
-| 1 description    | Toumei, restored verbatim from `storage/logs/laravel.log`                                           |
-| 5 descriptions   | Written as factual synopses from each book's own back cover, copyright page, or opening pages       |
-| Year / pages     | `pdfinfo`, copyright pages, back covers — never invented                                            |
-| Cover pairings   | Backup's `file_path`↔`cover_image` for the 8 backed-up books; mtime order (validated against those 8) for the other 7 |
+| Field          | Source                                                                                                                |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 8 descriptions | Restored **verbatim** from `database/database.sqlite.backup-20260812-011300`                                          |
+| 1 description  | Toumei, restored verbatim from `storage/logs/laravel.log`                                                             |
+| 5 descriptions | Written as factual synopses from each book's own back cover, copyright page, or opening pages                         |
+| Year / pages   | `pdfinfo`, copyright pages, back covers — never invented                                                              |
+| Cover pairings | Backup's `file_path`↔`cover_image` for the 8 backed-up books; mtime order (validated against those 8) for the other 7 |
 
 Two years/publishers are deliberately `null` rather than guessed: **Malioboro at Midnight** has no colophon in its scan (only a PDF creation date of 2024-02-21, which is the scan, not the printing), and **Rindu**'s publisher is never named in the file. Likewise, **Rindu** and **Tentang Kamu** have no back-cover blurb anywhere in their PDFs (both are image-only scans with a watermark text layer), so their descriptions are built from what is verifiable — the opening pages, the epigraph, the publisher, and the award — instead of a plot summary nobody can source here.
 
@@ -227,7 +227,7 @@ Two years/publishers are deliberately `null` rather than guessed: **Malioboro at
 
 ### Demo engagement is a separate, optional step
 
-`php artisan catalog:reseed` deletes books, pivots, placeholder authors/series/publishers **and** all engagement (53 reviews / 4 reading progress / 3 favorites), then replants the 14 books. It does **not** recreate engagement — the existing demo data is reset to zero on purpose.
+`php artisan catalog:reseed` deletes books, pivots, placeholder authors/series/publishers **and** all engagement (reviews, reading progress, favorites, bookmarks — 51 / 7 / 2 / 0 rows at the time of writing), then replants the 14 books. It does **not** recreate engagement — the existing demo data is reset to zero on purpose.
 
 `EngagementSeeder` (called by `DatabaseSeeder` on a fresh `db:seed`) creates demo reviews, reading progress, favorites, and a reading goal, and it only ever references real slugs. Re-add it at any time with:
 
