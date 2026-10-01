@@ -9,7 +9,7 @@
     <div class="container page-hero__inner">
         <p class="eyebrow">Cerita Kami</p>
         <h1><i data-lucide="sunset" aria-hidden="true"></i> Tentang SenjaPustaka</h1>
-        <p>Kami percaya membaca harus terasa hangat — seperti memasuki toko buku favoritmu saat senja.</p>
+        <p>Kami percaya membaca harus terasa hangat, seperti memasuki toko buku favoritmu saat senja.</p>
     </div>
 </section>
 
@@ -20,7 +20,7 @@
             <h2 style="font-size:1.8rem;">Mengubah perpustakaan digital menjadi tempat yang terasa hidup</h2>
             <p style="color:var(--color-muted);font-size:1.05rem;line-height:1.8;">
                 SenjaPustaka lahir dari satu pertanyaan sederhana: kenapa membaca digital terasa begitu kaku?
-                Kami merancang ulang semuanya — dari palet warna langit senja, tipografi serif yang dramatis,
+                Kami merancang ulang semuanya: dari palet warna langit senja, tipografi serif yang dramatis,
                 sampai gamifikasi yang memotivasi kamu untuk terus membaca.
             </p>
             <p style="color:var(--color-muted);font-size:1.05rem;line-height:1.8;">
@@ -50,7 +50,7 @@
 
         <div class="reveal" style="margin-top:var(--sp-12);">
             <p class="eyebrow">Filosofi</p>
-            <h2 style="font-size:1.8rem;">"Mulai kapan pun, berhenti kapan pun — kembali persis di halaman terakhirmu."</h2>
+            <h2 style="font-size:1.8rem;">"Bacaan yang baik tidak menuntutmu membuka ulang dari awal."</h2>
             <p style="color:var(--color-muted);font-size:1.05rem;line-height:1.8;">
                 Kami tidak mengejar jumlah, tapi kenyamanan membaca. Karena itu semua fitur kami dirancang
                 untuk membuatmu betah: progres otomatis yang menyimpan halaman terakhirmu, bookmark,

@@ -110,7 +110,7 @@
 
             <div class="tab-pane is-active" data-tab="reading">
                 @if ($reading->isEmpty())
-                    <x-empty-state icon="book-open" title="Belum ada buku yang sedang dibaca" text="Pilih buku dari koleksi dan mulai baca — progresmu akan otomatis tersimpan." actionLabel="Jelajahi Koleksi" actionUrl="{{ route('library') }}" />
+                    <x-empty-state icon="book-open" title="Belum ada buku yang sedang dibaca" text="Pilih buku dari koleksi dan mulai baca. Progresmu akan otomatis tersimpan." actionLabel="Jelajahi Koleksi" actionUrl="{{ route('library') }}" />
                 @else
                     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--sp-4);">
                         @foreach ($reading as $item)
@@ -244,7 +244,7 @@
                 <span class="streak-card__icon"><i data-lucide="flame" aria-hidden="true"></i></span>
                 <div class="streak-card__body">
                     <div class="streak-card__num">{{ $user->streak_days }}<span style="font-size:1rem;color:var(--color-muted);"> hari</span></div>
-                    <p>Streak membaca harianmu{{ $user->streak_days >= 7 ? ' — luar biasa, pertahankan!' : ' — baca hari ini untuk menjaganya.' }}</p>
+                    <p>Streak membaca harianmu{{ $user->streak_days >= 7 ? ', luar biasa, pertahankan!' : '. Baca hari ini untuk menjaganya.' }}</p>
                 </div>
                 <div style="text-align:right;">
                     <div class="mono text-amber" style="font-size:1.2rem;font-weight:700;">{{ $user->longest_streak }} <i data-lucide="flame" aria-hidden="true"></i></div>

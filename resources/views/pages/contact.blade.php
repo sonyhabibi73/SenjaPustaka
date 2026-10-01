@@ -52,7 +52,7 @@
                         <span class="icon-chip"><i data-lucide="send" aria-hidden="true"></i></span>
                         <div>
                             <strong>Cara Tercepat</strong>
-                            <p class="small text-muted" style="margin:0;">Isi form di samping — pesanmu langsung masuk ke tim kami dan akan dibalas ke email yang kamu isi.</p>
+                            <p class="small text-muted" style="margin:0;">Isi form di samping. Pesanmu langsung masuk ke tim kami dan dibalas ke email yang kamu isi.</p>
                         </div>
                     </div>
                     <div class="contact-info-card">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'SenjaPustaka — Perpustakaan Digital')
+@section('title', 'SenjaPustaka · Perpustakaan Digital')
 @section('page', 'home')
 
 @section('content')
@@ -13,12 +13,12 @@
             <div class="hero__content">
                 <p class="hero__eyebrow">Perpustakaan Digital</p>
                 <h1 class="hero__title">
-                    Mulai kapan pun, berhenti kapan pun —<br>
-                    kembali <em>persis</em> di halaman terakhirmu.
+                    Mulai kapan pun, berhenti kapan pun.<br>
+                    Kembali <em>persis</em> di halaman terakhirmu.
                 </h1>
                 <p class="hero__sub">
-                    SenjaPustaka adalah perpustakaan digital yang terasa hidup — baca ebook PDF &amp; CBZ,
-                    simpan progres otomatis, dan kumpulkan poin untuk naik level pembaca.
+                    Baca ebook PDF dan CBZ di rak yang selalu terbuka, simpan progres tiap halaman,
+                    dan kumpulkan poin untuk naik level pembaca.
                 </p>
                 <div class="hero__ctas">
                     <a href="{{ route('library') }}" class="btn btn--primary btn--lg"><i data-lucide="library-big" aria-hidden="true"></i> Jelajahi Koleksi</a>
@@ -221,17 +221,17 @@
             <div class="feature-card reveal" style="--d: 0ms">
                 <div class="feature-card__num">01</div>
                 <h3><i data-lucide="target" aria-hidden="true"></i> Baca, Simpan, Lanjutkan</h3>
-                <p>Buka ebook PDF, CBZ, atau teks langsung dari rak. Setiap halaman tersimpan otomatis — tutup kapan pun, dan kembali persis di halaman terakhirmu tanpa perlu mencarinya lagi.</p>
+                <p>Buka ebook PDF, CBZ, atau teks langsung dari rak. Setiap halaman tersimpan otomatis, jadi kamu boleh menutupnya kapan pun. Saat dibuka lagi, bacaan berhenti tepat di halaman terakhir, tanpa perlu mencarinya.</p>
             </div>
             <div class="feature-card reveal" style="--d: 80ms">
                 <div class="feature-card__num">02</div>
                 <h3><i data-lucide="award" aria-hidden="true"></i> Poin, Badge &amp; Level</h3>
-                <p>Setiap halaman memberi 2 poin dan menamatkan buku memberi bonus 50 poin. Buka {{ $stats['badge'] }} badge — dari streak harian sampai 10.000 halaman — dan naik {{ count(App\Services\Level::LEVELS) }} level menuju Dewa Baca.</p>
+                <p>Setiap halaman memberi 2 poin dan menamatkan buku memberi bonus 50 poin. Ada {{ $stats['badge'] }} badge, dari streak harian sampai 10.000 halaman, dan {{ count(App\Services\Level::LEVELS) }} level yang harus dinaiki sampai Dewa Baca.</p>
             </div>
             <div class="feature-card reveal" style="--d: 160ms">
                 <div class="feature-card__num">03</div>
                 <h3><i data-lucide="moon-star" aria-hidden="true"></i> Gelap yang Dramatis</h3>
-                <p>Dua tema bawaan: "Langit Tengah Malam" yang lembut di mata untuk membaca larut malam, dan "Golden Hour" yang hangat untuk siang hari — beralih sekali klik dari navbar.</p>
+                <p>Dua tema bawaan: "Langit Tengah Malam" yang lembut di mata untuk membaca larut malam, dan "Golden Hour" yang hangat untuk siang hari. Keduanya bisa ditukar dengan sekali klik dari navbar.</p>
             </div>
         </div>
     </div>

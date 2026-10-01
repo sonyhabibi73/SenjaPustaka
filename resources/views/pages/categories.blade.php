@@ -9,7 +9,7 @@
     <div class="container page-hero__inner">
         <p class="eyebrow">Jelajahi Perpustakaan</p>
         <h1><i data-lucide="tags" aria-hidden="true"></i> Kategori Buku</h1>
-        <p>Dari fantasi sampai bisnis — temukan genre yang paling kamu suka.</p>
+        <p>Dari fantasi sampai bisnis, temukan genre yang paling kamu suka.</p>
     </div>
 </section>
 

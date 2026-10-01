@@ -24,8 +24,8 @@
             <p class="error-page__desc">
                 @auth
                     Kamu login sebagai <strong>{{ auth()->user()->email }}</strong>.
-                    Halaman ini khusus akun <strong>admin</strong> SenjaPustaka —
-                    keluar dulu, lalu login pakai akun admin.
+                    Halaman ini khusus akun <strong>admin</strong> SenjaPustaka.
+                    Keluar dulu, lalu login pakai akun admin.
                 @else
                     Halaman ini khusus admin SenjaPustaka.
                     Login dulu pakai akun admin ya.

@@ -77,11 +77,11 @@
                 <p class="small text-muted" style="margin:6px 0 0;">Jika diisi, gambar ini yang dipakai di semua halaman. Kosongkan untuk memakai gradien warna.</p>
             </div>
             <div class="field">
-                <label for="cover_color">Warna Cover (hex) — fallback</label>
+                <label for="cover_color">Warna Cover (hex), dipakai jika tidak ada gambar</label>
                 <input type="color" id="cover_color" name="cover_color" class="input" value="{{ old('cover_color', $book?->cover_color ?? '#B4491A') }}" style="padding:4px;height:46px;">
             </div>
             <div class="field">
-                <label for="file">Berkas PDF / CBZ ({{ $book ? 'kosongkan jika tidak diganti' : 'opsional' }} — maks 200MB)</label>
+                <label for="file">Berkas PDF / CBZ ({{ $book ? 'kosongkan jika tidak diganti' : 'opsional' }}, maks 200MB)</label>
                 <input type="file" id="file" name="file" class="input" accept=".pdf,.cbz">
             </div>
         </div>

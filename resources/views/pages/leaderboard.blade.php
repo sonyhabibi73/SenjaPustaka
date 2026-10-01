@@ -9,7 +9,7 @@
     <div class="container page-hero__inner">
         <p class="eyebrow">Para Pecinta Buku</p>
         <h1><i data-lucide="medal" aria-hidden="true"></i> Peringkat Pembaca</h1>
-        <p>Pembaca dengan poin terbanyak — siapa yang akan jadi Dewa Baca berikutnya?</p>
+        <p>Pembaca dengan poin terbanyak. Siapa yang akan jadi Dewa Baca berikutnya?</p>
         <div style="margin-top:var(--sp-6);">
             <a href="{{ route('ranking') }}" class="btn btn--light"><i data-lucide="trophy" aria-hidden="true"></i> Peringkat Buku</a>
         </div>

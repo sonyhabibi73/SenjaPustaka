@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="SenjaPustaka — perpustakaan digital yang terasa hidup. Baca ebook PDF & CBZ, kumpulkan poin, dan naik level pembaca.">
+    <meta name="description" content="SenjaPustaka, perpustakaan digital untuk ebook PDF dan CBZ. Baca di mana pun, kumpulkan poin, dan naik level pembaca.">
     <meta name="theme-color" content="#f9f4ec">
     <meta property="og:title" content="SenjaPustaka">
-    <meta property="og:description" content="Perpustakaan digital yang terasa hidup — baca, kumpulkan poin, naik level.">
+    <meta property="og:description" content="Baca ebook PDF dan CBZ, kumpulkan poin, naik level pembaca.">
     <meta property="og:type" content="website">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">

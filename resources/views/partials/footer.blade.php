@@ -3,7 +3,7 @@
         <div class="footer__inner">
             <div>
                 <a href="{{ route('home') }}" class="logo" aria-label="SenjaPustaka - Beranda">Senja<em>Pustaka</em></a>
-                <p style="margin-top:14px;">Perpustakaan digital yang terasa hidup. Baca kapan pun, di mana pun — kumpulkan poin, dapatkan badge, dan temukan cerita yang menemani senjamu.</p>
+                <p style="margin-top:14px;">Rak baca digital untuk ebook PDF dan CBZ. Baca kapan pun, di mana pun, kumpulkan poin, dapatkan badge, dan temukan cerita yang menemani senjamu.</p>
             </div>
 
             <nav aria-label="Navigasi footer - Jelajahi">
@@ -43,7 +43,7 @@
 
         <div class="footer__bottom">
             <span>© {{ now()->year }} SenjaPustaka. Dibuat dengan <i data-lucide="heart" class="text-amber" aria-hidden="true"></i> di Indonesia.</span>
-            <span>Baca kapan saja — progresmu selalu menunggu di halaman terakhir.</span>
+            <span>Baca kapan saja, progresmu selalu menunggu di halaman terakhir.</span>
         </div>
     </div>
 </footer>
