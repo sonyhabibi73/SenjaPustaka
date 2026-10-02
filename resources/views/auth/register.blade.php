@@ -20,8 +20,41 @@
     </div>
     <div class="field">
         <label for="password">Kata Sandi</label>
-        <input type="password" id="password" name="password" class="input" required minlength="8" autocomplete="new-password">
-        <small class="text-muted">Minimal 8 karakter.</small>
+        <input type="password" id="password" name="password" class="input" required minlength="8" autocomplete="new-password" aria-describedby="password-rules">
+        <ul class="password-rules" id="password-rules" aria-label="Syarat kata sandi" aria-live="polite" hidden>
+            <li class="password-rule" data-valid="false">
+                <span class="password-rule__icon" aria-hidden="true">
+                    <i class="password-rule__icon--cross" data-lucide="circle-x"></i>
+                    <i class="password-rule__icon--check" data-lucide="circle-check"></i>
+                </span>
+                <span>Minimal 8 karakter</span>
+                <span class="sr-only password-rule__status">Belum terpenuhi</span>
+            </li>
+            <li class="password-rule" data-valid="false">
+                <span class="password-rule__icon" aria-hidden="true">
+                    <i class="password-rule__icon--cross" data-lucide="circle-x"></i>
+                    <i class="password-rule__icon--check" data-lucide="circle-check"></i>
+                </span>
+                <span>1 huruf besar</span>
+                <span class="sr-only password-rule__status">Belum terpenuhi</span>
+            </li>
+            <li class="password-rule" data-valid="false">
+                <span class="password-rule__icon" aria-hidden="true">
+                    <i class="password-rule__icon--cross" data-lucide="circle-x"></i>
+                    <i class="password-rule__icon--check" data-lucide="circle-check"></i>
+                </span>
+                <span>1 angka</span>
+                <span class="sr-only password-rule__status">Belum terpenuhi</span>
+            </li>
+            <li class="password-rule" data-valid="false">
+                <span class="password-rule__icon" aria-hidden="true">
+                    <i class="password-rule__icon--cross" data-lucide="circle-x"></i>
+                    <i class="password-rule__icon--check" data-lucide="circle-check"></i>
+                </span>
+                <span>1 karakter spesial</span>
+                <span class="sr-only password-rule__status">Belum terpenuhi</span>
+            </li>
+        </ul>
     </div>
     <div class="field">
         <label for="password_confirmation">Ulangi Kata Sandi</label>

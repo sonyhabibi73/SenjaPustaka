@@ -23,6 +23,33 @@ test('pengguna baru dapat mendaftar', function () {
     $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
 });
 
+test('password registrasi diterima saat memenuhi empat syarat minimum', function () {
+    $this->post(route('register'), [
+        'name' => 'Test User',
+        'email' => 'minimum@example.com',
+        'password' => 'Ab1!xyzw',
+        'password_confirmation' => 'Ab1!xyzw',
+    ])->assertRedirect(route('dashboard'));
+
+    $this->assertAuthenticated();
+});
+
+test('password registrasi ditolak saat belum memenuhi empat syarat minimum', function (string $password) {
+    $this->post(route('register'), [
+        'name' => 'Test User',
+        'email' => 'invalid@example.com',
+        'password' => $password,
+        'password_confirmation' => $password,
+    ])->assertSessionHasErrors('password');
+
+    $this->assertGuest();
+})->with([
+    'terlalu pendek' => 'Ab1!xy',
+    'tanpa huruf besar' => 'ab1!xyzw',
+    'tanpa angka' => 'Abc!xyzw',
+    'tanpa karakter spesial' => 'Abc1xyzw',
+]);
+
 test('pengguna dapat login dan logout', function () {
     $user = User::factory()->create(['password' => 'password123']);
 

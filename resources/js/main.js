@@ -16,6 +16,7 @@ import {
     Calendar,
     Camera,
     CircleCheck,
+    CircleX,
     Clock,
     Cpu,
     Crown,
@@ -80,6 +81,7 @@ const lucideIcons = {
     Calendar,
     Camera,
     CircleCheck,
+    CircleX,
     Clock,
     Cpu,
     Crown,
@@ -790,6 +792,65 @@ const lucideIcons = {
         });
     }
 
+    function initPasswordRules() {
+        const passwordInput = document.getElementById('password');
+        const passwordRules = document.getElementById('password-rules');
+
+        if (!passwordInput || !passwordRules) {
+            return;
+        }
+
+        const rules = [
+            (value) => value.length >= 8,
+            (value) => /[A-Z]/.test(value),
+            (value) => /[0-9]/.test(value),
+            (value) => /[^A-Za-z0-9]/.test(value),
+        ];
+        const items = Array.from(
+            passwordRules.querySelectorAll('.password-rule'),
+        );
+        let hasStartedTyping = false;
+
+        const updatePasswordRules = () => {
+            const value = passwordInput.value;
+            const results = rules.map((rule) => rule(value));
+            const isValid = results.every(Boolean);
+
+            if (value.length > 0) {
+                hasStartedTyping = true;
+            }
+
+            passwordRules.hidden = !hasStartedTyping;
+
+            items.forEach((item, index) => {
+                item.dataset.valid = String(results[index]);
+
+                const status = item.querySelector('.password-rule__status');
+
+                if (status) {
+                    status.textContent = results[index]
+                        ? 'Terpenuhi'
+                        : 'Belum terpenuhi';
+                }
+            });
+
+            passwordInput.setCustomValidity(
+                value.length > 0 && !isValid
+                    ? 'Kata sandi belum memenuhi semua syarat.'
+                    : '',
+            );
+
+            if (value.length > 0 && !isValid) {
+                passwordInput.setAttribute('aria-invalid', 'true');
+            } else {
+                passwordInput.removeAttribute('aria-invalid');
+            }
+        };
+
+        passwordInput.addEventListener('input', updatePasswordRules);
+        updatePasswordRules();
+    }
+
     /* ── Init berdasarkan halaman ─────────────────────────────── */
     function initPage() {
         const page = document.body.dataset.page;
@@ -800,6 +861,10 @@ const lucideIcons = {
 
         if (page === 'login' || page === 'register') {
             initStars();
+        }
+
+        if (page === 'register') {
+            initPasswordRules();
         }
     }
 

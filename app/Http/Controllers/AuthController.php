@@ -46,11 +46,14 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(12)
-                ->mixedCase()
-                ->letters()
+            'password' => ['required', 'confirmed', 'regex:/[A-Z]/', Password::min(8)
                 ->numbers()
                 ->symbols()],
+        ], [
+            'password.min' => 'Kata sandi harus minimal 8 karakter.',
+            'password.numbers' => 'Kata sandi harus mengandung minimal satu angka.',
+            'password.symbols' => 'Kata sandi harus mengandung minimal satu karakter spesial.',
+            'password.regex' => 'Kata sandi harus mengandung minimal satu huruf besar.',
         ]);
 
         $user = User::create($data);
