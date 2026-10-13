@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\FileStorage;
 use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -47,12 +47,12 @@ class ProfileController extends Controller
                 $webp = ImageOptimizer::toWebp($avatarPath, 256, 80);
 
                 if ($webp !== null) {
-                    Storage::disk('public')->delete($avatarPath);
+                    FileStorage::uploads()->delete($avatarPath);
                     $avatarPath = $webp;
                 }
 
                 if ($user->avatar) {
-                    Storage::disk('public')->delete($user->avatar);
+                    FileStorage::uploads()->delete($user->avatar);
                 }
 
                 $user->avatar = $avatarPath;

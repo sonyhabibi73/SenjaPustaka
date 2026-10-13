@@ -296,7 +296,7 @@ class BookCatalogSeeder extends Seeder
             $authorId = $authorIds[$data['author']] ?? null;
 
             if (! $authorId) {
-                $this->command?->warn('Penulis tidak ditemukan: '.$data['author']);
+                $this->command->warn('Penulis tidak ditemukan: '.$data['author']);
             }
 
             $book = Book::updateOrCreate(
@@ -331,6 +331,6 @@ class BookCatalogSeeder extends Seeder
             );
         }
 
-        $this->command?->info(count(self::BOOKS).' buku nyata tersinkron.');
+        $this->command->info(count(self::BOOKS).' buku nyata tersinkron.');
     }
 }

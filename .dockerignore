@@ -1,0 +1,35 @@
+# Artefak build — dibangun ulang di dalam image.
+node_modules
+public/build
+public/hot
+vendor
+
+# Rahasia & data lokal.
+.env
+.env.*
+!.env.example
+database/*.sqlite
+database/*.sqlite-*
+
+# Berkas buku & sampul (436 MB) hidup di R2 saat deploy, bukan di image.
+storage/app/public/books
+storage/app/public/covers
+storage/app/public/avatars
+
+# Berkas yang tidak relevan untuk runtime.
+.git
+.github
+Dockerfile
+.dockerignore
+Caddyfile
+README.md
+DOKUMENTASI_FITUR.md
+desain.md
+
+# Log & cache.
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+npm-debug.log
+yarn-error.log

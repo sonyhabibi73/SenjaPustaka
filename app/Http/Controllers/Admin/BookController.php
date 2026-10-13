@@ -8,11 +8,11 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\Publisher;
 use App\Models\Series;
+use App\Services\FileStorage;
 use App\Services\ImageOptimizer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BookController extends Controller
@@ -22,7 +22,7 @@ class BookController extends Controller
         $query = Book::with('author');
 
         if ($q = $request->string('q')->trim()->toString()) {
-            $query->where('title', 'like', "%{$q}%");
+            $query->whereLike('title', "%{$q}%");
         }
 
         $books = $query->latest()->paginate(15)->withQueryString();
@@ -53,7 +53,7 @@ class BookController extends Controller
     public function destroy(Book $book): RedirectResponse
     {
         if ($book->cover_image) {
-            Storage::disk('public')->delete($book->cover_image);
+            FileStorage::uploads()->delete($book->cover_image);
         }
 
         $book->delete();
@@ -120,18 +120,18 @@ class BookController extends Controller
                 $webp = ImageOptimizer::toWebp($storedCover, 600, 80);
 
                 if ($webp !== null) {
-                    Storage::disk('public')->delete($storedCover);
+                    FileStorage::uploads()->delete($storedCover);
                     $storedCover = $webp;
                 }
 
                 if ($book->cover_image) {
-                    Storage::disk('public')->delete($book->cover_image);
+                    FileStorage::uploads()->delete($book->cover_image);
                 }
 
                 $book->cover_image = $storedCover;
             }
         } elseif ($request->boolean('remove_cover') && $book->cover_image) {
-            Storage::disk('public')->delete($book->cover_image);
+            FileStorage::uploads()->delete($book->cover_image);
             $book->cover_image = null;
         }
 
@@ -146,7 +146,7 @@ class BookController extends Controller
 
             if ($stored !== false) {
                 if ($book->file_path) {
-                    Storage::disk('public')->delete($book->file_path);
+                    FileStorage::books()->delete($book->file_path);
                 }
 
                 $book->file_path = $stored;

@@ -2,12 +2,16 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Storage;
-
 class ImageOptimizer
 {
     /**
-     * Konversi gambar yang tersimpan di disk 'public' menjadi WebP (dengan resize bila perlu).
+     * Konversi gambar yang tersimpan pada disk unggahan menjadi WebP
+     * (dengan resize bila perlu).
+     *
+     * Prosesnya memakai API string milik GD (getimagesizefromstring +
+     * imagecreatefromstring + imagewebp ke string), jadi tidak butuh path
+     * filesystem sama sekali — cara yang sama berlaku untuk disk lokal
+     * maupun R2. Tidak ada file sementara yang dibuat.
      *
      * @return string|null path file WebP baru, atau null jika konversi gagal / tidak didukung.
      */
@@ -17,15 +21,15 @@ class ImageOptimizer
             return null;
         }
 
-        $full = Storage::disk('public')->path($storedPath);
+        $disk = FileStorage::uploads();
 
-        if (! is_file($full)) {
+        if (! $disk->exists($storedPath)) {
             return null;
         }
 
-        $info = @getimagesize($full);
+        $bytes = $disk->get($storedPath);
 
-        if ($info === false) {
+        if ($bytes === '' || ($info = @getimagesizefromstring($bytes)) === false) {
             return null;
         }
 
@@ -35,9 +39,9 @@ class ImageOptimizer
         }
 
         $src = match ($info[2]) {
-            IMAGETYPE_JPEG => @imagecreatefromjpeg($full),
-            IMAGETYPE_PNG => @imagecreatefrompng($full),
-            IMAGETYPE_WEBP => @imagecreatefromwebp($full),
+            IMAGETYPE_JPEG => @imagecreatefromstring($bytes),
+            IMAGETYPE_PNG => @imagecreatefromstring($bytes),
+            IMAGETYPE_WEBP => @imagecreatefromstring($bytes),
             default => null,
         };
 
@@ -65,21 +69,30 @@ class ImageOptimizer
             imagesavealpha($src, true);
         }
 
-        $dir = dirname($storedPath);
-        $newPath = $dir.'/'.pathinfo($storedPath, PATHINFO_FILENAME).'.webp';
-        $tmp = tempnam(sys_get_temp_dir(), 'webp');
+        // imagewebp menulis ke file (argumen null hanya mencetak ke stdout),
+        // jadi encode dulu ke file sementara lalu baru dibaca untuk dikirim
+        // ke disk. Memakai file sementara, bukan path storage, supaya identik
+        // untuk disk lokal maupun R2.
+        $tmpOut = tempnam(sys_get_temp_dir(), 'webp');
 
-        if (imagewebp($src, $tmp, $quality) && is_file($tmp)) {
-            Storage::disk('public')->put($newPath, (string) file_get_contents($tmp));
+        if ($tmpOut === false || ! imagewebp($src, $tmpOut, $quality) || ! is_file($tmpOut)) {
             imagedestroy($src);
-            @unlink($tmp);
+            @unlink($tmpOut ?: '');
 
-            return $newPath;
+            return null;
         }
 
         imagedestroy($src);
-        @unlink($tmp);
+        $webp = (string) file_get_contents($tmpOut);
+        @unlink($tmpOut);
 
-        return null;
+        if ($webp === '') {
+            return null;
+        }
+
+        $newPath = dirname($storedPath).'/'.pathinfo($storedPath, PATHINFO_FILENAME).'.webp';
+        $disk->put($newPath, $webp);
+
+        return $newPath;
     }
 }

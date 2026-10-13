@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\FileStorage;
 use Database\Factories\BookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -113,19 +114,20 @@ class Book extends Model
     }
 
     /**
-     * Path publik gambar cover (disk public), null jika tidak ada.
+     * URL publik gambar cover, null jika tidak ada.
      *
-     * Sengaja path relatif (bukan URL absolut): kalau pakai URL absolut,
-     * APP_URL=http://localhost:8000 ikut tertanam di src, jadi di HP/device
-     * lain gambar mengarah ke localhost device itu sendiri dan tidak tampil.
-     * Path relatif selalu same-origin, jadi aman di host mana pun — pola yang
-     * sama dengan path relatif dari route reader.file di ReaderController untuk PDF.
+     * Disk lokal menghasilkan path relatif ('/storage/...'), bukan URL absolut:
+     * kalau URL absolut, APP_URL=http://localhost:8000 ikut tertanam di src, jadi
+     * di HP/device lain gambar mengarah ke localhost device itu sendiri. Path
+     * relatif selalu same-origin, jadi aman di host mana pun — pola yang sama
+     * dengan path relatif dari route reader.file di ReaderController untuk PDF.
+     *
+     * Saat UPLOADS_DISK=r2, FileStorage mengembalikan URL absolut r2.dev karena
+     * berkasnya memang tidak ada di server aplikasi.
      */
     public function coverUrl(): ?string
     {
-        return $this->cover_image
-            ? '/storage/'.ltrim($this->cover_image, '/')
-            : null;
+        return FileStorage::url($this->cover_image);
     }
 
     /**

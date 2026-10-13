@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Bookmark;
+use App\Services\FileStorage;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
@@ -37,7 +38,7 @@ class ReaderController extends Controller
                 $pdfUrl = parse_url(route('reader.file', $book), PHP_URL_PATH);
             } elseif ($ext === 'cbz') {
                 $mode = 'cbz';
-                $cbzPages = $this->countCbzPages($book->file_path);
+                $cbzPages = $this->countCbzPages($book);
                 $book->pages = $cbzPages ?: $book->pages;
             }
         }
@@ -70,16 +71,26 @@ class ReaderController extends Controller
 
     /**
      * Sajikan satu halaman gambar dari file CBZ.
+     *
+     * Dua jalur, tergantung disk buku aktif:
+     * - lokal : buka ZipArchive, kirim isi satu gambar (paling hemat, tanpa
+     *   menulis file apa pun ke disk tiap request);
+     * - cloud (R2): arahkan browser ke URL bertanda tangan. Cloud tidak
+     *   bisa membuka ZIP dari jauh, jadi halamannya sudah diekstrak lebih
+     *   dulu oleh `catalog:extract-cbz` dan redirect ke berkas hasil.
      */
     public function cbzPage(Request $request, Book $book, int $page): Response
     {
         abort_unless($book->is_published, 404);
+        abort_unless($this->isCbz($book), 404);
 
-        $full = $book->file_path ? Storage::disk('public')->path($book->file_path) : null;
-        $isCbz = $full !== null && file_exists($full)
-            && strtolower(pathinfo($full, PATHINFO_EXTENSION)) === 'cbz';
+        if (FileStorage::isRemote()) {
+            return $this->redirectToExtractedPage($book, $page);
+        }
 
-        abort_unless($isCbz, 404);
+        $full = FileStorage::localPath($book->file_path);
+
+        abort_unless($full !== null, 404);
 
         $mtime = (int) filemtime($full);
         $etag = '"'.md5($full.'|'.$page.'|'.$mtime).'"';
@@ -116,23 +127,32 @@ class ReaderController extends Controller
     }
 
     /**
-     * Sajikan berkas PDF asli lewat BinaryFileResponse.
+     * Sajikan berkas PDF asli.
      *
      * Mengapa lewat controller, bukan file statis di public/storage?
      * Karena pdf.js memakai HTTP Range request untuk mengambil potongan
      * file saja — BinaryFileResponse Symfony mendukung Range (206 Partial
      * Content), sehingga browser cukup mengunduh halaman yang dibutuhkan
      * alih-alih seluruh PDF yang bisa puluhan MB.
+     *
+     * Di disk cloud, PDF tidak bisa dilayani lewat response()->file()
+     * karena berkasnya tidak ada di filesystem server. R2 menghormati
+     * Range request seperti S3, jadi cukup redirect ke URL bertanda tangan
+     * dan pdf.js tetap menarik hanya bagian yang dibutuhkan — lewat R2,
+     * bukan lewat server aplikasi.
      */
-    public function file(Book $book): BinaryFileResponse
+    public function file(Book $book): Response
     {
         abort_unless($book->is_published, 404);
+        abort_unless($this->isPdf($book), 404);
 
-        $full = $book->file_path ? Storage::disk('public')->path($book->file_path) : null;
-        $isPdf = $full !== null && file_exists($full)
-            && strtolower(pathinfo($full, PATHINFO_EXTENSION)) === 'pdf';
+        if (FileStorage::isRemote()) {
+            return $this->redirectToTemporaryUrl($book->file_path);
+        }
 
-        abort_unless($isPdf, 404);
+        $full = FileStorage::localPath($book->file_path);
+
+        abort_unless($full !== null, 404);
 
         return response()->file($full, [
             'Content-Type' => 'application/pdf',
@@ -171,15 +191,90 @@ class ReaderController extends Controller
         return $chunks ?: [trim($content)];
     }
 
-    private function countCbzPages(string $path): int
+    private function countCbzPages(Book $book): int
     {
-        $full = Storage::disk('public')->path($path);
+        // Di cloud, sumber kebenaran jumlah halaman adalah manifest hasil
+        // ekstraksi — bukan ZipArchive (tak bisa jarak jauh) dan bukan kolom
+        // books.pages (bisa tertinggal kalau berkas CBZ-nya diganti).
+        if (FileStorage::isRemote()) {
+            return count($this->extractedPages($book));
+        }
 
-        if (! file_exists($full)) {
+        $full = FileStorage::localPath((string) $book->file_path);
+
+        if ($full === null) {
             return 0;
         }
 
         return count($this->cbzImageIndex($full, (int) filemtime($full)));
+    }
+
+    private function isCbz(Book $book): bool
+    {
+        return strtolower(pathinfo((string) $book->file_path, PATHINFO_EXTENSION)) === 'cbz';
+    }
+
+    private function isPdf(Book $book): bool
+    {
+        return strtolower(pathinfo((string) $book->file_path, PATHINFO_EXTENSION)) === 'pdf';
+    }
+
+    /**
+     * Manifest halaman hasil ekstraksi CBZ, mis. books/tougei/pages.json.
+     *
+     * Cloud tidak bisa membuka ZIP dari jauh, jadi `catalog:extract-cbz`
+     * menyimpan tiap halaman sebagai berkas sendiri lalu menulis urutan
+     * namanya ke manifest. Manifest yang jadi sumber kebenaran, bukan
+     * books.pages, supaya ekstensi tiap halaman (png/jpg/webp) tidak perlu
+     * ditebak di sini.
+     *
+     * @return array<int, string>
+     */
+    private function extractedPages(Book $book): array
+    {
+        $manifest = 'books/'.$book->slug.'/pages.json';
+        $disk = FileStorage::books();
+
+        return Cache::remember('cbz-manifest:'.$book->id.':'.$book->file_path, now()->addDay(), function () use ($disk, $manifest) {
+            if (! $disk->exists($manifest)) {
+                return [];
+            }
+
+            $decoded = json_decode($disk->get($manifest), true);
+
+            if (! is_array($decoded)) {
+                return [];
+            }
+
+            return array_values(array_filter($decoded, 'is_string'));
+        });
+    }
+
+    /**
+     * Redirect ke URL bertanda tangan di disk cloud (R2).
+     */
+    private function redirectToTemporaryUrl(string $path): RedirectResponse
+    {
+        $url = FileStorage::books()->temporaryUrl($path, now()->addMinutes(30));
+
+        abort_if(blank($url), 404);
+
+        // 302 supaya tiap pembukaan dokumen mendapat URL baru dan tidak
+        // menggantung di cache browser setelah URL lama kedaluwarsa.
+        return redirect()->away($url);
+    }
+
+    /**
+     * Redirect satu halaman CBZ ke berkas hasil ekstraksi di disk cloud.
+     */
+    private function redirectToExtractedPage(Book $book, int $page): RedirectResponse
+    {
+        $pages = $this->extractedPages($book);
+        $name = $pages[$page - 1] ?? null;
+
+        abort_unless($name !== null, 404);
+
+        return $this->redirectToTemporaryUrl('books/'.$book->slug.'/pages/'.$name);
     }
 
     /**

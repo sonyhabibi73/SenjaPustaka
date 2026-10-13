@@ -17,8 +17,8 @@ class UserController extends Controller
 
         if ($q = $request->string('q')->trim()->toString()) {
             $query->where(function ($builder) use ($q) {
-                $builder->where('name', 'like', "%{$q}%")
-                    ->orWhere('email', 'like', "%{$q}%");
+                $builder->whereLike('name', "%{$q}%")
+                    ->orWhereLike('email', "%{$q}%");
             });
         }
 

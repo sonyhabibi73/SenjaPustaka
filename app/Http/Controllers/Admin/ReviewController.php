@@ -16,8 +16,8 @@ class ReviewController extends Controller
         $query = Review::with(['user', 'book'])->latest();
 
         if ($q = $request->string('q')->trim()->toString()) {
-            $query->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$q}%"))
-                ->orWhereHas('book', fn ($b) => $b->where('title', 'like', "%{$q}%"));
+            $query->whereHas('user', fn ($u) => $u->whereLike('name', "%{$q}%"))
+                ->orWhereHas('book', fn ($b) => $b->whereLike('title', "%{$q}%"));
         }
 
         $reviews = $query->paginate(15)->withQueryString();

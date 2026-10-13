@@ -163,6 +163,7 @@ Click stars on book page → POST /review {book_id, rating, comment}
 - Password hashing, session regeneration, generic forgot-password response.
 - Hashed + expiring + single-use email verification tokens.
 - Failed logins logged; admin role changes logged; activity log stores IP + user agent.
+- Reading requires authentication, and book files are delivered as short-lived presigned URLs rather than public links, so a URL copied from a page stops working after 30 minutes.
 
 ## Performance Summary
 
@@ -170,6 +171,7 @@ Click stars on book page → POST /review {book_id, rating, comment}
 - PDF via HTTP Range (partial download) + virtualized rendering.
 - CBZ index cached 1 day, pages served with ETag/304 + `immutable`.
 - Lazy-loaded images with next-page preload.
+- Book files are served by redirect to a presigned R2 URL (30-minute expiry), so file bytes never pass through the app server or count against its bandwidth.
 - Debounced autosave (600ms) and search (220ms).
 - PDF.js loaded only when a PDF is opened; all uploads converted to WebP.
 
@@ -177,8 +179,72 @@ Click stars on book page → POST /review {book_id, rating, comment}
 
 - `php artisan backup:database` — DB dump with optional gzip and rotation (default keep 7).
 - `php artisan app:sync-sqlite-to-mysql` — safe upsert sync (or `--mirror` for full sync).
-- 13 Pest test files covering auth, password reset, email verification, all pages, security (SQLi/XSS/mass-assignment/throttles), reader actions, PDF range requests, cover upload, and image optimization.
+- 14 Pest test files (78 tests) covering auth, password reset, email verification, all pages, security (SQLi/XSS/mass-assignment/throttles), reader actions, PDF range requests, cover upload, image optimization, cloud-storage routing, and the deployment commands.
 - `php artisan catalog:reseed [--force]` — wipe the catalog and plant the real one (see below).
+
+---
+
+## Deployment — Render + Neon + R2 (free tier, no card)
+
+Three services, all on free tiers, none of which needs a credit card. The constraint that drives the design: **the host's filesystem is ephemeral**, so nothing may be read from local disk at runtime.
+
+| Piece | Service | Why |
+| --- | --- | --- |
+| Web service | Render (Docker, FrankenPHP) | Runs PHP; the free plan is the only one that can. Netlify/Vercel cannot run PHP at all. |
+| Database | Neon (Postgres, free) | Render's own free Postgres expires after 30 days; Neon Free does not. |
+| Files | Cloudflare R2 (S3-compatible) | 436 MB of books + covers cannot live on a free ephemeral disk, and R2 egress is free. |
+
+### Runtime shape
+
+`Dockerfile` builds in three stages — Node/Vite for assets, Composer for dependencies, then `dunglas/frankenphp` (PHP + Caddy in one image). `Caddyfile` serves `public/` directly and rewrites everything else to `index.php`, so no application file is reachable. `render.yaml` declares the service, the health-check path (`/up`), and every environment variable.
+
+```
+Dockerfile → Caddyfile → public/ (static) | everything else → Laravel
+```
+
+### Disk selection is environment-driven
+
+Two switches decide where files live, both defaulting to the local `public` disk so development and the test suite are untouched:
+
+- `BOOKS_DISK` — PDFs and CBZ files (default `public`).
+- `UPLOADS_DISK` — cover images and avatars (default `public`).
+
+`App\Services\FileStorage` is the only place that reads those switches. Deploying to R2 is therefore an env change, not a code change.
+
+One helper guards the branch that matters: `FileStorage::isRemote()`. A cloud disk has no filesystem path, so `->path()`, `ZipArchive`, and `filemtime()` are not available there — any code that needs them must ask first.
+
+### Reader on a cloud disk
+
+`ReaderController` takes one of two paths per book type:
+
+- **PDF** — local: `BinaryFileResponse`, which honours HTTP Range so pdf.js fetches only the bytes it needs (206 Partial Content). Cloud: redirect to a presigned R2 URL. R2 honours Range too, so pdf.js still fetches partial data, but the bytes travel straight from R2 to the browser instead of through the app server — the 512 MB instance never buffers a 40 MB PDF.
+- **CBZ** — local: `ZipArchive` opens the file and streams one image per request. Cloud: `ZipArchive` cannot open a remote ZIP, so `catalog:extract-cbz` pre-extracts every page into its own file plus a manifest, and the reader redirects to a presigned URL for the requested page.
+
+The manifest (`books/{slug}/pages.json`) is an ordered list of extracted filenames and is the source of truth for page count and page order. `books.pages` in the database is updated once by the command but is not written on every request — the manifest avoids a database write per page view, and per-page filenames mean the reader never has to guess a file extension.
+
+```bash
+php artisan catalog:extract-cbz [--book=slug] [--force]
+```
+
+### One-off file migration
+
+```bash
+php artisan catalog:push-to-r2 [--only=books|uploads] [--dry-run]
+```
+
+Copies `books/`, `covers/`, and `avatars/` to R2 **under identical keys**, so no `file_path` or `cover_image` column changes and no migration is needed. Run `catalog:extract-cbz` afterwards for the CBZ titles.
+
+### Database portability
+
+Development and tests run on SQLite (`phpunit.xml` forces an in-memory database). Production runs on Postgres, so case-insensitive search uses `whereLike()` instead of a raw `like` operator: it compiles to `ILIKE` on Postgres and `LIKE` on SQLite/MySQL, which keeps one query working on every supported driver. All 12 migrations use the schema builder only, so they port unchanged.
+
+### Verification
+
+```bash
+composer ci:check   # lint:check + format:check + types:check + test
+```
+
+`pint --test` (118 files), `phpstan`, ESLint, Prettier, `npm run build`, and `php artisan test` (78/78) all pass. `composer audit` reports no known advisories. `CloudStorageTest` covers the redirect paths against a faked disk, so no R2 credentials are needed to test cloud behaviour; `DeploymentCommandsTest` covers both commands the same way.
 
 ---
 
@@ -295,7 +361,7 @@ Three hard boundaries keep it from becoming page-wide wobble: (1) `pointermove` 
 - [x] Hero base has a scene, not a void: flat ground band + cast shadow + `.scroll-hint` relocated onto it (7.7:1 light / 14.2:1 dark, was 5.03:1 on sky); no text sits outside its contrast-safe zone.
 - [x] `.book-grid` never leaves a single orphan card: `$trending` and `$latest` are both **12**, which resolves to `6+6`, `5+5+2`, or `4+4+4` across all `auto-fill` widths (was 6 → `5+1` orphan at 1028–1231px).
 - [x] The section directly under the search card uses `.section--lead` (48px, was 80px), closing the ~132px band below it.
-- [x] `npm run build`, `npm run lint:check`, `npm run format:check`, `pint --test`, `php artisan test` (60/60) all pass.
+- [x] `npm run build`, `npm run lint:check`, `npm run format:check`, `pint --test`, `php artisan test` (78/78) all pass.
 - [x] Service worker cache bumped to `senja-v12` so returning users pick up the new skin.
 - [x] Navigation honesty fixed: a failed navigation no longer falls back to the cached homepage. The SW now only serves a cached page when the URL matches **exactly**, otherwise it returns an explicit `503` offline page — so the address bar and the content can never disagree. Only `response.ok` (2xx) documents are cached, and `main.js` calls `registration.update()` on load so the fix is not held back by the browser's update throttle.
 - [x] Service worker no longer registers on `localhost` / `127.0.0.1` / `[::1]` — a locally built bundle can no longer pin itself to its own cache.
@@ -310,3 +376,5 @@ Three hard boundaries keep it from becoming page-wide wobble: (1) `pointermove` 
 3. The reader loads its own JS file (`reader.js`) instead of `main.js`, so global features (notification polling, sidebar) don't run on reading pages.
 4. No soft deletes — deleting a book/user permanently removes related data; use regular backups.
 5. UI text is hard-coded in Indonesian (no localization layer yet).
+6. SQLite is development-only. The deployed app uses Postgres, because a free ephemeral container disk cannot hold a database — SQLite there would vanish on every deploy. The test suite still runs on in-memory SQLite, so no cloud credentials are needed to test.
+7. Render's free plan sleeps after 15 minutes of inactivity and offers no persistent disk. Cold start is roughly a minute; nothing else about the app assumes a warm process.

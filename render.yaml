@@ -1,0 +1,94 @@
+# Blueprint Render — dideploy lewat "New > Blueprint" di dashboard Render,
+# atau otomatis dari repo memakai render.yaml.
+#
+# Gratis semua: web service Free + Neon Free (Postgres) + Cloudflare R2.
+# Yang perlu diisi manual di dashboard Render: nilai SYNC dari Secret
+# Environment (tanda sync: true) — jangan pernah ditulis ke file ini.
+
+services:
+  - type: web
+    name: senjapustaka
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    branch: main
+    autoDeployTrigger: commit
+    healthCheckPath: /up
+    envVars:
+      # ── Aplikasi ───────────────────────────────────────────────────────────
+      - key: APP_NAME
+        value: SenjaPustaka
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        # ganti dengan URL Render kamu setelah deploy pertama
+        value: https://senjapustaka.onrender.com
+      - key: APP_LOCALE
+        value: id
+      - key: APP_FALLBACK_LOCALE
+        value: en
+      - key: APP_TIMEZONE
+        value: Asia/Jakarta
+
+      # ── Session, cache, queue ──────────────────────────────────────────────
+      # Semua pakai driver database: tidak ada Redis di free tier, dan disk
+      # container hilang tiap deploy. Tabelnya sudah ada di migrasi
+      # (sessions, cache, jobs).
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: DB_CONNECTION
+        value: pgsql
+
+      # ── Log ────────────────────────────────────────────────────────────────
+      # Render hanya menangkap stdout/stderr, dan disk container hilang tiap
+      # deploy — jadi jangan menulis log ke file.
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: warning
+
+      # ── Email ──────────────────────────────────────────────────────────────
+      # Render memblokir port SMTP (25/465/587), jadi mailer default log:
+      # email tidak benar-benar terkirim, hanya ditulis ke log. Login,
+      # registrasi, dan baca tetap jalan normal.
+      - key: MAIL_MAILER
+        value: log
+      - key: MAIL_FROM_ADDRESS
+        value: no-reply@senjapustaka.test
+
+      # ── Database (Neon) ────────────────────────────────────────────────────
+      # Pakai connection string berparameter (pooler Neon: port 5432 + ?sslmode=require
+      # + channel_binding=require). Driver pgsql membaca DB_URL lewat config/database.php.
+      - key: DB_URL
+        sync: false # isi manual: postgresql://USER:PASSWORD@HOST/neondb?sslmode=require
+
+      # ── Cloudflare R2 (buku, sampul, avatar) ──────────────────────────────
+      - key: BOOKS_DISK
+        value: r2
+      - key: UPLOADS_DISK
+        value: r2
+      - key: FILESYSTEM_DISK
+        value: r2
+      - key: R2_BUCKET
+        sync: false # nama bucket, mis. senjapustaka
+      - key: R2_ENDPOINT
+        sync: false # https://<account-id>.r2.cloudflarestorage.com
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_PUBLIC_URL
+        sync: false # https://pub-<account-id>.r2.dev (sampul & halaman CBZ)
+      - key: R2_REGION
+        value: auto

@@ -15,7 +15,7 @@ class ActivityLogController extends Controller
 
         // Filter by action
         if ($action = $request->string('action')->toString()) {
-            $query->where('action', 'like', "%{$action}%");
+            $query->whereLike('action', "%{$action}%");
         }
 
         // Filter by user

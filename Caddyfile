@@ -1,0 +1,40 @@
+# Konfigurasi Caddy untuk FrankenPHP.
+#
+# Serve langsung dari public/ supaya tidak ada file aplikasi yang bisa diunduh,
+# dan seluruh request yang bukan file asli diteruskan ke index.php.
+
+{
+	admin off
+	# TLS diurus Render; Caddy di belakang proxy tidak perlu managing sertifikat.
+	auto_https off
+}
+
+# Render menyuntikkan PORT (bawaan 10000) dan mensyaratkan service bind ke
+# 0.0.0.0 di port itu. Nilai bawaan 8000 dipakai untuk menjalankan image ini
+# langsung di lokal.
+:{$PORT:8000} {
+	root * /app/public
+
+	encode zstd br gzip
+
+	# Hanya aset ber-hash dari Vite yang boleh di-cache sangat lama: nama
+	# berkasnya berubah setiap build, jadi aman diimmutable.
+	@immutable path /build/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Service worker justru harus selalu dicek ulang, kalau tidak versi
+	# lamanya akan terkunci di cache dan pembaruan tidak pernah masuk.
+	header /sw.js Cache-Control "no-cache"
+
+	# Berkas asli (CSS, JS, gambar) dilayani apa adanya.
+	@static file
+	handle @static {
+		file_server
+	}
+
+	# Sisanya -> Laravel.
+	handle {
+		rewrite * /index.php
+		php_server
+	}
+}

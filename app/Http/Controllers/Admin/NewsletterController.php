@@ -15,7 +15,7 @@ class NewsletterController extends Controller
         $query = NewsletterSubscriber::latest();
 
         if ($q = $request->string('q')->trim()->toString()) {
-            $query->where('email', 'like', "%{$q}%");
+            $query->whereLike('email', "%{$q}%");
         }
 
         $subscribers = $query->paginate(15)->withQueryString();

@@ -17,6 +17,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Disk Unggahan & Disk Buku
+    |--------------------------------------------------------------------------
+    |
+    | Dua disk yang dipakai aplikasi:
+    |
+    | - uploads_disk : sampul buku dan avatar pengguna
+    | - books_disk   : berkas buku (PDF/CBZ)
+    |
+    | Keduanya default ke 'public' supaya pengembangan lokal dan pengujian
+    | tetap memakai storage/app/public. Saat deploy, arahkan keduanya ke
+    | 'r2' karena disk hosting ephemeral hilang tiap deploy.
+    |
+    */
+
+    'uploads_disk' => env('UPLOADS_DISK', 'public'),
+
+    'books_disk' => env('BOOKS_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -56,6 +76,24 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
+        /*
+         | Cloudflare R2 — API S3-compatible. Butuh region 'auto' dan endpoint
+         | https://<account-id>.r2.cloudflarestorage.com. R2_PUBLIC_URL dipakai
+         | untuk file yang boleh diakses publik (sampul, avatar, halaman CBZ).
+         */
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET'),
+            'url' => env('R2_PUBLIC_URL'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => env('R2_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
             'report' => false,
         ],

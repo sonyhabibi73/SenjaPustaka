@@ -18,6 +18,9 @@
 !.env.example
 /desain.md
 
+# Skrip khusus mesin lokal (mis. launcher dev server) — bukan bagian proyek
+/bin/
+
 # Kredensial, sertifikat, dan kunci privat
 *.pem
 *.key

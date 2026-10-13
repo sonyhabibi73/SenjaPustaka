@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\FileStorage;
 use App\Services\Level;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -149,6 +150,17 @@ class User extends Authenticatable
     public function levelInfo(): array
     {
         return Level::for($this->points);
+    }
+
+    /**
+     * URL publik avatar, null kalau pengguna belum mengunggah.
+     *
+     * Sama seperti Book::coverUrl() — path relatif untuk disk lokal,
+     * URL absolut untuk R2.
+     */
+    public function avatarUrl(): ?string
+    {
+        return FileStorage::url($this->avatar);
     }
 
     /**

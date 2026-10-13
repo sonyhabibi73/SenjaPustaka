@@ -19,9 +19,9 @@ class LibraryController extends Controller
         $q = $request->string('q')->trim()->toString();
         if ($q !== '') {
             $query->where(function ($builder) use ($q) {
-                $builder->where('title', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%")
-                    ->orWhereHas('author', fn ($a) => $a->where('name', 'like', "%{$q}%"));
+                $builder->whereLike('title', "%{$q}%")
+                    ->orWhereLike('description', "%{$q}%")
+                    ->orWhereHas('author', fn ($a) => $a->whereLike('name', "%{$q}%"));
             });
         }
 

@@ -17,9 +17,9 @@ class SearchController extends Controller
             ->with('author')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($builder) use ($q) {
-                    $builder->where('title', 'like', "%{$q}%")
-                        ->orWhere('description', 'like', "%{$q}%")
-                        ->orWhereHas('author', fn ($a) => $a->where('name', 'like', "%{$q}%"));
+                    $builder->whereLike('title', "%{$q}%")
+                        ->orWhereLike('description', "%{$q}%")
+                        ->orWhereHas('author', fn ($a) => $a->whereLike('name', "%{$q}%"));
                 });
             })
             ->paginate(12)
@@ -41,7 +41,7 @@ class SearchController extends Controller
 
         $books = Book::where('is_published', true)
             ->with('author')
-            ->where('title', 'like', "%{$q}%")
+            ->whereLike('title', "%{$q}%")
             ->limit(6)
             ->get()
             ->map(fn (Book $b) => [
