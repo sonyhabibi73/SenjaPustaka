@@ -2,7 +2,8 @@
 #
 # Build tiga tahap:
 #   1. assets  — Node/Vite membangun public/build
-#   2. vendor  — Composer memasang dependensi tanpa dev
+#   2. vendor  — dependensi PHP, dipasang dengan PHP versi yang SAMA dengan
+#                runtime (lihat catatan di bawah)
 #   3. runtime — FrankenPHP (PHP-FPM + Caddy dalam satu gambar), serves public/
 #
 # Rahasia dan APP_KEY tidak pernah ikut ter-copy: semuanya lewat environment
@@ -25,10 +26,16 @@ COPY resources/ ./resources/
 RUN npm run build
 
 # ── 2. Dependensi PHP ───────────────────────────────────────────────────────
-FROM composer:2 AS vendor
+# PENTING: tahap ini memakai image PHP yang sama dengan runtime. Kalau vendor
+# dipasang di image dengan PHP berbeda (mis. composer:2), Composer menyelesaikan
+# versi terhadap PHP yang salah dan bisa memilih paket yang butuh PHP 8.4 —
+# sementara runtime 8.3 lalu gagal saat autoload dengan "Composer detected
+# issues in your platform". Kunci versi PHP di kedua tahap ini.
+FROM dunglas/frankenphp:php8.5-bookworm AS vendor
 
 WORKDIR /app
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
@@ -38,12 +45,11 @@ RUN composer install \
     --optimize-autoloader
 
 # ── 3. Runtime ──────────────────────────────────────────────────────────────
-FROM dunglas/frankenphp:php8.3-bookworm AS runtime
+FROM dunglas/frankenphp:php8.5-bookworm AS runtime
 
-# pdo_pgsql → Neon · zip → baca CBZ · gd → WebP · pdo_sqlite → test lokal
+# pdo_pgsql → Neon · zip → baca CBZ · gd → WebP · intl/mbstring/bcmath → framework
 RUN install-php-extensions \
     pdo_pgsql \
-    pdo_sqlite \
     zip \
     gd \
     intl \

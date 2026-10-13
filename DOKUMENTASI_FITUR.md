@@ -198,6 +198,8 @@ Three services, all on free tiers, none of which needs a credit card. The constr
 
 `Dockerfile` builds in three stages — Node/Vite for assets, Composer for dependencies, then `dunglas/frankenphp` (PHP + Caddy in one image). `Caddyfile` serves `public/` directly and rewrites everything else to `index.php`, so no application file is reachable. `render.yaml` declares the service, the health-check path (`/up`), and every environment variable.
 
+Runtime is **PHP 8.5**. Symfony 8.1 and PHPUnit 13 both require `>= 8.4.1`, so PHP 8.3 (EOL since November 2025) is not an option, and `composer.json` declares `^8.4.1` to match that reality. The dependency stage deliberately builds `FROM` the same `php8.5-bookworm` image as the runtime: resolving dependencies against a *different* PHP version lets Composer pick packages the runtime later refuses to load, which fails at autoload time with `Composer detected issues in your platform`.
+
 ```
 Dockerfile → Caddyfile → public/ (static) | everything else → Laravel
 ```
