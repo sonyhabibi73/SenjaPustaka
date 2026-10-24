@@ -47,6 +47,12 @@ RUN composer install \
 # ── 3. Runtime ──────────────────────────────────────────────────────────────
 FROM dunglas/frankenphp:php8.5-bookworm AS runtime
 
+# Tolak build kalau base image masih memuat PHP rentan CVE-2026-109618 /
+# CVE-2026-109619 (RCE tanpa autentikasi, patch di 8.5.12). Tanpa guard ini,
+# `docker build` yang memakai layer cache lama bisa diam-diam menghasilkan
+# image berisi PHP 8.5.0 — persis yang terjadi sebelum patch dirilis.
+RUN php -r 'exit(version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 1);'
+
 # pdo_pgsql → Neon · zip → baca CBZ · gd → WebP · intl/mbstring/bcmath → framework
 RUN install-php-extensions \
     pdo_pgsql \
