@@ -280,9 +280,11 @@ The whole interface was rebuilt around a single idea: **the last warm light of d
 | `--color-field-border`                | `#9a8265`               | `#7a6c5a`               | form boundaries (≥3:1)                       |
 | `--senja-sky`                         | `#fbf1e1`               | `#221c15`               | flat brand bands (reader wash, panels)       |
 | `--dusk-1…4`                          | `#fdf7ee → #f2c191`     | `#17130f → #3f2a1d`     | **the sky**                                  |
-| `--dusk-sun`                          | `#e0743a` **sun**       | `#ece4d4` **moon**      | the celestial disk                           |
-| `--dusk-halo`                         | `#fce0b6` glare         | `#574734` halo          | flat ring around it                          |
-| `--dusk-sun-tex`                      | `none`                  | crater gradients        | craters, dark only                           |
+| `--dusk-sun`                          | `#e0743a` **sun**       | `#ece4d4` fallback      | the celestial disk (dark: behind the photo)  |
+| `--dusk-halo`                         | `#fce0b6` glare         | —                       | flat glare ring, light only                  |
+| `--dusk-sun-tex`                      | `none`                  | `url(…/moon.webp)`      | real moon photo, dark only                   |
+| `--dusk-orb-shadow`                   | 26px flat glare ring    | two-layer warm glow     | how the disk sits in the sky                 |
+| `--dusk-orb-filter`                   | `none`                  | `sepia(.3) saturate(.88) brightness(.92)` | warms the photo to the dusk palette |
 | `--dusk-starfield`                    | `none`                  | 5-star 88px tile        | small stars, dark only                       |
 | `--spine-text`                        | `#f9f4ec`               | `#f3e2c8`               | foil lettering on book spines                |
 | `--shelf-plank`                       | `#8a6647`               | `#2b2119`               | the shelf the books stand on                 |
@@ -315,11 +317,11 @@ The serif never appears on a button or a table header. Uppercase mono eyebrows +
 |              | Mode terang (senja)                                       | Mode gelap (malam)                                                                                                         |
 | ------------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Sky          | paper `#fdf7ee` → gold `#f2c191`                          | charcoal `#17130f` → ember-brown `#3f2a1d`                                                                                 |
-| Disk         | **sun** `#e0743a`, flat glare ring `#fce0b6`              | **moon** `#ece4d4` with **crater** gradients (`--dusk-sun-tex`) + halo `#574734`                                           |
+| Disk         | **sun** `#e0743a`, flat glare ring `#fce0b6`              | **moon photo** (`resources/images/moon.webp`, NASA, public domain) + soft two-layer glow                                    |
 | Stars        | none in the static field; only faint ember specks twinkle | **static starfield** — a 88×88 tile of 5 cream dots of varying size/opacity, `mask-image` fading it out toward the horizon |
 | JS particles | `rgba(180,73,26,.42)` — the first stars of dusk           | `rgba(243,236,220,.9)` — full night stars                                                                                  |
 
-Both disks come from the **same two elements** (`.bookshelf::before`, `.auth-panel::after`) driven purely by `--dusk-sun` / `--dusk-halo` / `--dusk-sun-tex` — no duplicated markup, no JS branch.
+Both disks come from the **same two elements** (`.bookshelf::before`, `.auth-panel::after`) driven purely by `--dusk-sun` / `--dusk-sun-tex` / `--dusk-orb-shadow` / `--dusk-orb-filter` — no duplicated markup, no JS branch. The moon photo lives in `resources/images/`, not `public/`, so Vite emits it and rewrites the URL; `public/` is not served by Vite during `npm run dev` (`publicDir: false` in the Laravel plugin), and a hard-coded `/images/…` path would 404 there.
 
 - **The sunset hero.** The homepage hero is a real dusk sky: `--dusk-1…4` ramping from paper at the top to gold at the horizon, capped by a **2px ember horizon line**, with the disk half-set behind the bookshelf — so the books read as silhouettes standing against the sun (or the moon).
 - **The books stand on the ground.** A **flat** `--dusk-ground` band (`64px`, terracotta in light / umber in dark) fills the base of the hero, and the ember horizon line closes it as the boundary to the page. It is _not_ a gradient, so the single sanctioned ramp is untouched. The shelf plank gets a second, warm `box-shadow` that falls toward that ground — the books have weight instead of floating. The disk's `bottom` is derived as `calc(var(--hero-ground) - var(--hero-pad-bottom))`, so it always stops **exactly at the ground line** and never sinks into it (in light mode sun `#e0743a` and ground `#e0a070` only differ by 1.40:1 — sinking would erase it). The layout math is one token pair, so it stays correct at the `860px` breakpoint too.
@@ -358,7 +360,7 @@ Three hard boundaries keep it from becoming page-wide wobble: (1) `pointermove` 
 - [x] Light **and** dark mode contrast checked pair-by-pair, including every stop of the dusk sky.
 - [x] Bookshelf no longer a bordered box; spine titles legible in both modes (was 1.02:1).
 - [x] Floating navbar: reserved space `--nav-clearance` keeps `.main`, `scroll-padding-top`, and anchor jumps clear of it in both the 72px and 60px states.
-- [x] Day/night verified: sun 1.9–2.2:1 vs sky, moon 10.7–12.0:1, craters 1.58:1, night stars 4.7–14.2:1, JS dusk specks 1.86:1; `--dusk-starfield` and `--dusk-sun-tex` are `none` in light mode.
+- [x] Day/night verified: sun 1.9–2.2:1 vs sky, night stars 4.7–14.2:1, JS dusk specks 1.86:1; the dark-mode moon is a real photograph with its own tonal range, and `--dusk-starfield` / `--dusk-sun-tex` are `none` in light mode.
 - [x] Hero motion budget is capped at three layers (stars / disk / shelf) with a static horizon reference; the parallax never applies outside `.hero`, and is off under `prefers-reduced-motion` or `(pointer: coarse)`.
 - [x] Hero base has a scene, not a void: flat ground band + cast shadow + `.scroll-hint` relocated onto it (7.7:1 light / 14.2:1 dark, was 5.03:1 on sky); no text sits outside its contrast-safe zone.
 - [x] `.book-grid` never leaves a single orphan card: `$trending` and `$latest` are both **12**, which resolves to `6+6`, `5+5+2`, or `4+4+4` across all `auto-fill` widths (was 6 → `5+1` orphan at 1028–1231px).

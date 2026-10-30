@@ -111,6 +111,9 @@
     --dusk-sun: #e0743a;
     --dusk-halo: #fce0b6;
     --dusk-sun-tex: none;
+    /* Cincin halo padat — di mode terang ini bagian dari bentuk matahari. */
+    --dusk-orb-shadow: 0 0 0 26px var(--dusk-halo);
+    --dusk-orb-filter: none;
 
     /* Mode terang: bintang baru muncul — sedikit dan redup.
        Hanya partikel JS yang berkedip; ladang statis mati total. */
@@ -222,8 +225,11 @@
     --senja-sky-deep: #2b231a;
     --senja-horizon: #3d3327;
 
-    /* Mode gelap = MALAM: cakram jadi bulan pucat + kawah,
-       lalu langit dihiasi ladang bintang statis. */
+    /* Mode gelap = MALAM: cakram matahari berganti jadi foto bulan asli,
+       lalu langit dihiasi ladang bintang statis.
+       Foto NASA (domain publik, GSFC_20171208_Archive_e001861) dipakai
+       menggantikan kawah buatan CSS: kawah hasil radial-gradient selalu
+       terbaca sebagai bintik datar. */
     --dusk-1: #17130f;
     --dusk-2: #241a13;
     --dusk-3: #33221a;
@@ -231,28 +237,15 @@
     --dusk-ground: #241a12;
     --dusk-ground-shade: rgba(0, 0, 0, 0.55);
     --dusk-sun: #ece4d4;
-    --dusk-halo: #574734;
-    --dusk-sun-tex:
-        radial-gradient(
-            circle at 33% 35%,
-            rgba(96, 86, 70, 0.32) 0 8.5%,
-            transparent 9%
-        ),
-        radial-gradient(
-            circle at 58% 54%,
-            rgba(96, 86, 70, 0.26) 0 5.5%,
-            transparent 6%
-        ),
-        radial-gradient(
-            circle at 43% 69%,
-            rgba(96, 86, 70, 0.22) 0 4%,
-            transparent 4.5%
-        ),
-        radial-gradient(
-            circle at 69% 31%,
-            rgba(96, 86, 70, 0.24) 0 3.5%,
-            transparent 4%
-        );
+    --dusk-sun-tex: url('../images/moon.webp');
+    /* Tanpa cincin padat: glow dua lapis menyatu ke langit, jadi bulan
+       tidak terlihat seperti stiker yang ditempel di atas rak. */
+    --dusk-orb-shadow:
+        0 0 34px 2px rgba(236, 228, 212, 0.14),
+        0 0 96px 28px rgba(120, 96, 68, 0.16);
+    /* Sedikit dihangatkan supaya abu-abu foto tidak terasa dingin
+       di antara cokelat senja. */
+    --dusk-orb-filter: sepia(0.3) saturate(0.88) brightness(0.92);
 
     /* Bintang kecil: ubin 88×88px, tiap ubin 4 bintang berbeda
        ukuran & kecerahan, lalu diturunkan mask-nya ke arah horizon. */

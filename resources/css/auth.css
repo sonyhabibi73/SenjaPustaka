@@ -27,7 +27,7 @@
     justify-content: space-between;
 }
 
-/* Matahari senja (mode terang) / bulan ber-kawah (mode gelap) */
+/* Matahari senja (mode terang) / foto bulan (mode gelap) */
 .auth-panel::after {
     content: '';
     position: absolute;
@@ -38,7 +38,11 @@
     border-radius: 50%;
     background-color: var(--dusk-sun);
     background-image: var(--dusk-sun-tex, none);
-    box-shadow: 0 0 0 34px var(--dusk-halo);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: var(--dusk-orb-shadow);
+    filter: var(--dusk-orb-filter);
     pointer-events: none;
 }
 
